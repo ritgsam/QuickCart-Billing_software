@@ -33,10 +33,11 @@
             <input type="text" name="phone" value="{{ $supplier->phone }}" class="w-full p-2 border rounded">
         </div>
 
-        <div class="mb-4">
-            <label class="block">Address:</label>
-            <textarea name="address" class="w-full p-2 border rounded">{{ $supplier->address }}</textarea>
-        </div>
+        <div class="col-md-12">
+    <label class="form-label">Address:</label>
+    <textarea name="address" class="form-control" rows="3" required>{{ $supplier->address }}</textarea>
+</div>
+
 
         <div class="mb-4">
             <label class="block">GST Number:</label>

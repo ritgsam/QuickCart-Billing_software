@@ -23,7 +23,16 @@ class CreateSuppliersTable extends Migration
     }
 
     public function down()
-    {
-        Schema::dropIfExists('suppliers');
-    }
+{
+    Schema::table('purchase_invoices', function (Blueprint $table) {
+        $table->dropForeign(['supplier_id']);
+    });
+
+    Schema::table('purchase_payments', function (Blueprint $table) {
+        $table->dropForeign(['supplier_id']);
+    });
+
+    Schema::dropIfExists('suppliers');
+}
+
 }

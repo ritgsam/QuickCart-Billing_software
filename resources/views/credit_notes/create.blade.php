@@ -1,0 +1,48 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Create Credit Note</h4>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('credit_notes.store') }}" method="POST">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="sale_invoice_id" class="form-label">Select Invoice:</label>
+                    <select name="sale_invoice_id" class="form-select" required>
+                        <option value="">-- Select Invoice --</option>
+                        @foreach($saleInvoices as $invoice)
+                            <option value="{{ $invoice->id }}">{{ $invoice->invoice_number }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="credit_date" class="form-label">Credit Date:</label>
+                        <input type="date" name="credit_date" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="total_amount" class="form-label">Total Amount:</label>
+                        <input type="number" name="total_amount" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reason" class="form-label">Reason:</label>
+                    <textarea name="reason" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('credit_notes.index') }}" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Credit Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

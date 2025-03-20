@@ -16,34 +16,27 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
+ protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'status',
+        'last_login',
     ];
 
-    /**
-     *
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
+    //  protected $fillable = [
+    //     'name', 'email', 'password', 'role', 'last_login', 'status'
+    // ];
 
-    /**
-     *
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    // protected $hidden = [
+    //     'password',
+    // ];
+
+    // protected $casts = [
+    //     'last_login' => 'datetime',
+    // ];
 }
 
 

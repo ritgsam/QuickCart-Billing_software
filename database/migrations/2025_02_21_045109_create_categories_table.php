@@ -5,17 +5,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up()
-    {
-         if (!Schema::hasTable('categories')){Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
-    }
-    }
-    public function down()
-    {
-        Schema::dropIfExists('categories');
-    }
+{
+    Schema::table('categories', function (Blueprint $table) {
+        $table->enum('status', ['Active', 'Inactive'])->default('Active');
+    });
+}
+
+public function down()
+{
+    Schema::table('categories', function (Blueprint $table) {
+        $table->dropColumn('status');
+    });
+}
 };

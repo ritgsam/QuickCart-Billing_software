@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class SaleInvoiceItem extends Model
 {
     use HasFactory;
+protected $fillable = ['sale_invoice_id', 'product_id', 'quantity', 'unit_price', 'gst_rate', 'discount', 'total_price'];
+    // protected $fillable = ['sale_invoice_id', 'product_id', 'quantity', 'unit_price', 'tax', 'total_price'];
 
-    protected $fillable = ['sale_invoice_id', 'product_id', 'quantity', 'unit_price', 'tax', 'total_price'];
-
-    public function invoice()
+    public function saleInvoice()
     {
         return $this->belongsTo(SaleInvoice::class);
     }
@@ -20,3 +20,4 @@ class SaleInvoiceItem extends Model
         return $this->belongsTo(Products::class);
     }
 }
+

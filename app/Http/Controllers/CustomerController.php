@@ -16,26 +16,27 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
-
-    public function update(Request $request, Customer $customer)
+public function update(Request $request, $id)
 {
-    $request->validate([
+    $validated = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:customers,email,' . $customer->id,
+        'email' => 'required|email|unique:customers,email,' . $id,
         'phone' => 'required|string|max:15',
+        'address' => 'required|string|max:500',
     ]);
 
+    $customer = Customer::findOrFail($id);
+    $customer->update($validated);
 
-    $customer->update($request->all());
-
-    return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+    return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
 }
+
+
 
     public function edit(Customer $customer)
 {
     return view('customers.edit', compact('customer'));
 }
-
 
     public function create()
     {

@@ -1,37 +1,46 @@
+
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Suppliers</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Suppliers</h4>
+            <a href="{{ route('suppliers.create') }}" class="btn btn-light">+ Add Supplier</a>
+        </div>
 
-    <a href="{{ route('suppliers.create') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Add Supplier</a>
+        <div class="card-body bg-light">
+            <table class="table table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($suppliers as $supplier)
+                    <tr>
+                        <td>{{ $supplier->company_name }}</td>
+                        <td>{{ $supplier->email }}</td>
+                        <td>{{ $supplier->phone }}</td>
+                        <td>{{ $supplier->address }}</td> 
+                        <td class="text-center">
+                            <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning btn-sm">Edit</a>
 
-    <table class="w-full mt-4 border bg-white">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="px-4 py-2 border">Company</th>
-                <th class="px-4 py-2 border">Email</th>
-                <th class="px-4 py-2 border">Phone</th>
-                <th class="px-4 py-2 border">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($suppliers as $supplier)
-            <tr class="border">
-                <td class="px-4 py-2 border">{{ $supplier->company_name }}</td>
-                <td class="px-4 py-2 border">{{ $supplier->email }}</td>
-                <td class="px-4 py-2 border">{{ $supplier->phone }}</td>
-                <td class="px-4 py-2 border">
-                    <a href="{{ route('suppliers.edit', $supplier->id) }}" class="text-yellow-600">Edit</a>
-                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                            <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Are you sure?');" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection

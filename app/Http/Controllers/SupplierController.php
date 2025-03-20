@@ -39,21 +39,21 @@ class SupplierController extends Controller
         return view('suppliers.edit', compact('supplier'));
     }
 
-    public function update(Request $request, Supplier $supplier)
+public function update(Request $request, $id)
 {
-    $request->validate([
+    $validated = $request->validate([
         'company_name' => 'required|string|max:255',
-        'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
+        'email' => 'required|email|unique:suppliers,email,' . $id,
         'phone' => 'required|string|max:15',
-        'address' => 'nullable|string',
-        'gst_number' => 'nullable|string|max:20',
-        'payment_terms' => 'nullable|string|max:100',
+        'address' => 'required|string|max:500',
     ]);
 
-    $supplier->update($request->all());
+    $supplier = Supplier::findOrFail($id);
+    $supplier->update($validated);
 
-    return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
+    return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully!');
 }
+
 
 
     public function destroy(Supplier $supplier)
