@@ -17,6 +17,8 @@ return new class extends Migration {
                 $table->decimal('unit_price', 10, 2);
                 $table->decimal('tax', 5, 2)->default(0);
                 $table->decimal('total_price', 10, 2);
+        $table->decimal('gst_rate', 5, 2)->default(0)->after('unit_price');
+        $table->decimal('discount', 5, 2)->default(0)->after('gst_rate');
                 $table->timestamps();
             });
         }
@@ -24,6 +26,8 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('sale_invoice_items');
-    }
+Schema::table('sale_invoice_items', function (Blueprint $table) {
+        $table->dropColumn(['gst_rate', 'discount']);
+    });
+ }
 };

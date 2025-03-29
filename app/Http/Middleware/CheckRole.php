@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CheckRole {
     public function handle(Request $request, Closure $next, $role) {
         if (Auth::check() && Auth::user()->role === $role) {
-            return $next($request); // Allow access
+            return $next($request);
         }
         return redirect('/home')->with('error', 'Unauthorized access!');
     }

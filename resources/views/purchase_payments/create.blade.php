@@ -17,132 +17,57 @@
             </ul>
         </div>
     @endif
-{{-- <form action="{{ route('purchase_payments.store') }}" method="POST">
-    @csrf
+    <form method="POST" action="{{ route('purchase-payments.store') }}">
+        @csrf
 
-    <label for="purchase_invoice_id">Select Invoice</label>
-    <select name="purchase_invoice_id" class="form-control" required>
-        <option value="">Select Invoice</option>
+        <div class="row g-3">
+
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Select Invoice:</label>
+    <select name="purchase_invoice_id" id="purchase_invoice_id" class="form-select" required onchange="fetchInvoiceDetails(this.value)">
+        <option value="">-- Select Invoice --</option>
         @foreach ($invoices as $invoice)
             <option value="{{ $invoice->id }}" data-supplier="{{ $invoice->supplier_id }}">
                 {{ $invoice->invoice_number }}
             </option>
         @endforeach
     </select>
-
-    <label for="supplier_id">Select Supplier</label>
-    <select name="supplier_id" class="form-control" required>
-        <option value="">Select Supplier</option>
+</div>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Select Supplier:</label>
+    <select name="supplier_id" id="supplier_id" class="form-select" required>
+        <option value="">-- Select Supplier --</option>
         @foreach ($suppliers as $supplier)
             <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
         @endforeach
-    </select> --}}
-
-
-{{-- <form action="{{ route('purchase_payments.store') }}" method="POST">
-    @csrf
-
-    <label for="purchase_invoice_id">Select Invoice:</label>
-    <select name="purchase_invoice_id" class="form-control" required>
-        <option value="">Select Invoice</option>
-        @foreach ($invoices as $invoice)
-            <option value="{{ $invoice->id }}">{{ $invoice->invoice_number }}</option>
-        @endforeach
-    </select> --}}
-
-{{-- <form action="{{ route('purchase-payments.update', $purchasePayment->id) }}" method="POST"> --}}
-
-{{-- <form action="{{ route('purchase-payments.store') }}" method="POST">
-    @csrf
-    @method('PUT')
-
-    <label for="purchase_invoice_id">Select Invoice</label>
-    <select name="purchase_invoice_id" class="form-control">
-        <option value="">Select Invoice</option>
-        @foreach ($invoices as $invoice)
-            <option value="{{ $invoice->id }}" {{ $purchasePayment->purchase_invoice_id == $invoice->id ? 'selected' : '' }}>
-                {{ $invoice->invoice_number }}
-            </option>
-        @endforeach
-    </select> --}}
-
-    {{-- <label>Payment Date:</label>
-    <input type="date" name="payment_date" value="{{ $purchasePayment->payment_date }}" class="form-control">
-
-    <label>Amount Paid (₹):</label>
-    <input type="number" name="amount_paid" value="{{ old('amount_paid') }}" class="form-control">
-
-    <label>Discount (₹):</label>
-    <input type="number" name="discount" value="{{ $purchasePayment->discount }}" class="form-control">
-
-    <label>GST (%) :</label>
-    <input type="number" name="gst" value="{{ $purchasePayment->gst }}" class="form-control">
-
-    <label>Round Off (₹):</label>
-    <input type="number" name="round_off" value="{{ $purchasePayment->round_off }}" class="form-control">
-
-    <label>Balance Due (₹):</label>
-    <input type="number" name="balance_due" value="{{ $purchasePayment->balance_due }}" class="form-control">
-
-    <label>Payment Mode:</label>
-    <select name="payment_mode" class="form-control">
-        <option value="Cash" {{ $purchasePayment->payment_mode == 'Cash' ? 'selected' : '' }}>Cash</option>
-        <option value="Card" {{ $purchasePayment->payment_mode == 'Card' ? 'selected' : '' }}>Card</option>
-        <option value="UPI" {{ $purchasePayment->payment_mode == 'UPI' ? 'selected' : '' }}>UPI</option>
-        <option value="Bank Transfer" {{ $purchasePayment->payment_mode == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer</option>
     </select>
+</div>
 
-    <label>Status:</label>
-    <select name="status" class="form-control">
-        <option value="Completed" {{ $purchasePayment->status == 'Completed' ? 'selected' : '' }}>Completed</option>
-        <option value="Pending" {{ $purchasePayment->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-    </select>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Invoice Date:</label>
+    <input type="date" id="invoice_date" name="invoice_date" class="form-control" readonly>
+</div>
 
-    <button type="submit" class="btn btn-primary">Update Payment</button>
-</form> --}}
-    <form method="POST" action="{{ route('purchase-payments.store') }}">
-        @csrf
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Total Invoice Amount (₹):</label>
+    <input type="number" id="total_amount" class="form-control" readonly>
+</div>
 
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Select Invoice:</label>
-                <select name="purchase_invoice_id" class="form-select" required>
-                    <option value="">-- Select Invoice --</option>
-                    @foreach ($invoices as $invoice)
-                        <option value="{{ $invoice->id }}">{{ $invoice->invoice_number }}</option>
-                    @endforeach
-                </select>
-            </div>
+{{-- <div class="col-md-6">
+    <label class="form-label fw-semibold">Round Off (₹):</label>
+    <input type="number" id="round_off" class="form-control" readonly>
+</div> --}}
 
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Select Supplier:</label>
-                <select name="supplier_id" class="form-select" required>
-                    <option value="">-- Select Supplier --</option>
-                    @foreach ($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
-                    @endforeach
-                </select>
-            </div>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Balance Due (₹):</label>
+    <input type="number" id="balance_due" name="balance_due" class="form-control" readonly>
+</div>
 
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Payment Date:</label>
-                <input type="date" name="payment_date" class="form-control" required>
-            </div>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Amount Paid (₹):</label>
+    <input type="number" id="amount_paid" name="amount_paid" class="form-control" required oninput="updateBalanceDue()">
+</div>
 
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Amount Paid (₹):</label>
-                <input type="number" step="0.01" name="amount_paid" class="form-control" required>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Round Off (₹):</label>
-                <input type="number" step="0.01" name="round_off" class="form-control">
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">Balance Due (₹):</label>
-                <input type="number" step="0.01" name="balance_due" class="form-control" required>
-            </div>
 
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Payment Mode:</label>
@@ -169,8 +94,66 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary px-4">Save Payment</button>
+            <button type="submit" class="btn text-white px-4" style="background-color: rgba(43, 42, 42, 0.694);">Save Payment</button>
         </div>
     </form>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("select[name='purchase_invoice_id']").addEventListener("change", function () {
+        fetchInvoiceDetails(this.value);
+    });
+
+    document.querySelector("input[name='amount_paid']").addEventListener("input", function () {
+        updateBalanceDue();
+    });
+});
+
+function fetchInvoiceDetails(invoiceId) {
+    if (!invoiceId) {
+        clearFields();
+        return;
+    }
+
+    fetch(`/get-purchase-invoice-details/${invoiceId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.invoice) {
+                document.getElementById("invoice_date").value = data.invoice.invoice_date;
+                document.getElementById("supplier_id").value = data.invoice.supplier_id;
+                document.getElementById("total_amount").value = data.invoice.total_amount;
+                document.getElementById("round_off").value = data.invoice.round_off;
+                document.getElementById("balance_due").value = data.invoice.balance_due;
+            } else {
+                clearFields();
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching invoice:", error);
+        });
+}
+
+function updateBalanceDue() {
+    let totalAmount = parseFloat(document.getElementById("total_amount").value) || 0;
+    let amountPaid = parseFloat(document.querySelector("input[name='amount_paid']").value) || 0;
+    let roundOff = parseFloat(document.getElementById("round_off").value) || 0;
+
+    let newBalanceDue = totalAmount - amountPaid + roundOff;
+
+    if (newBalanceDue < 0) {
+        newBalanceDue = 0;
+    }
+
+    document.getElementById("balance_due").value = newBalanceDue.toFixed(2);
+}
+
+function clearFields() {
+    document.getElementById("invoice_date").value = "";
+    document.getElementById("supplier_id").value = "";
+    document.getElementById("total_amount").value = "";
+    document.getElementById("round_off").value = "";
+    document.getElementById("balance_due").value = "";
+}
+</script>
+
 @endsection

@@ -9,6 +9,7 @@ use App\Models\Products;
 use App\Models\SalePayment;
 use App\Models\PurchasePayment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -19,10 +20,19 @@ class DashboardController extends Controller
     if ($currentHour < 12) {
         $greeting = "Good Morning";
     } elseif ($currentHour < 18) {
-        $greeting = "Good Evening";
+        $greeting = "Good Afternoon";
     } else {
         $greeting = "Good Evening";
     }
+
+    $salesData = DB::table('sale_invoices')
+        ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
+        ->where('created_at', '>=', Carbon::now()->subDays(7))
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get();
+    $sales_days = $salesData->pluck('date')->toArray();
+    $sales_amounts = $salesData->pluck('total')->toArray();
 
     $total_sales_month = SaleInvoice::whereMonth('created_at', date('m'))->sum('total_amount');
     $total_sales_year = SaleInvoice::whereYear('created_at', date('Y'))->sum('total_amount');
@@ -38,6 +48,7 @@ class DashboardController extends Controller
     $low_stock_products = Products::where('stock', '<', 5)->get();
 
     return view('dashboard.index', compact(
+'sales_days', 'sales_amounts',
         'greeting',
         'total_sales_month',
         'total_sales_year',

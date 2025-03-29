@@ -8,8 +8,8 @@ use App\Models\Product;
 use App\Models\Products;
 use App\Models\SalePayment;
 use App\Models\SaleInvoiceItem;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use App\Libraries\MyFPDF;
 
 class SaleInvoiceController extends Controller
 {
@@ -40,26 +40,48 @@ public function index(Request $request)
     return view('sale_invoices.index', compact('saleInvoices', 'customers'));
 }
 
-public function download($id)
-{
-    $invoice = SaleInvoice::findOrFail($id);
-
-    $pdf = Pdf::loadView('sale_invoices.pdf', compact('invoice'));
-
-    return $pdf->download('invoice_' . $invoice->invoice_number . '.pdf');
-}
-
 
 public function generatePdf($id)
 {
     $invoice = SaleInvoice::with(['customer', 'items.product'])->findOrFail($id);
 
-    $pdf = Pdf::loadView('sale_invoices.pdf', compact('invoice'))
-                ->setPaper('A4', 'portrait');
+    $pdf = new MyFPDF();
+    $pdf->AddPage();
 
-    return $pdf->stream("Sale_Invoice_{$invoice->invoice_number}.pdf");
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(95, 8, "Invoice Number: " . $invoice->invoice_number, 0, 0, 'L');
+    $pdf->Cell(95, 8, "Invoice Date: " . $invoice->invoice_date, 0, 1, 'R');
+    $pdf->Cell(95, 8, "Customer: " . $invoice->customer->name, 0, 0, 'L');
+    $pdf->Cell(95, 8, "Due Date: " . $invoice->due_date, 0, 1, 'R');
+    $pdf->Ln(5);
+
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->SetFillColor(200, 200, 200);
+    $pdf->Cell(60, 8, 'Product', 1, 0, 'C', true);
+    $pdf->Cell(15, 8, 'Qty', 1, 0, 'C', true);
+    $pdf->Cell(30, 8, 'Unit Price', 1, 0, 'C', true);
+    $pdf->Cell(20, 8, 'GST (%)', 1, 0, 'C', true);
+    $pdf->Cell(25, 8, 'Discount (%)', 1, 0, 'C', true);
+    $pdf->Cell(40, 8, 'Total', 1, 1, 'C', true);
+
+    $pdf->SetFont('Arial', '', 9);
+    foreach ($invoice->items as $item) {
+        $pdf->Cell(60, 8, $item->product->name, 1, 0, 'L');
+        $pdf->Cell(15, 8, $item->quantity, 1, 0, 'C');
+        $pdf->Cell(30, 8, utf8_decode("") . number_format($item->unit_price, 2), 1, 0, 'R');
+        $pdf->Cell(20, 8, $item->gst_rate . '%', 1, 0, 'C');
+        $pdf->Cell(25, 8, $item->discount . '%', 1, 0, 'C');
+        $pdf->Cell(40, 8, utf8_decode("") . number_format($item->total_price, 2), 1, 1, 'R');
+    }
+
+    $pdf->Ln(5);
+
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(145, 10, 'Total Amount:', 0, 0, 'R');
+    $pdf->Cell(40, 10, utf8_decode("") . number_format($invoice->total_amount, 2), 0, 1, 'R');
+
+    $pdf->Output('D', "Invoice_{$invoice->invoice_number}.pdf");
 }
-
 
 public function customer()
 {
@@ -80,7 +102,6 @@ public function update(Request $request, SaleInvoice $invoice)
         'products.*.unit_price' => 'required|numeric|min:0',
         'products.*.gst_rate' => 'required|numeric',
         'products.*.discount' => 'nullable|numeric|min:0',
-        'products.*.total_price' => 'required|numeric|min:0',
     ]);
 
     $invoice->update([
@@ -94,7 +115,17 @@ public function update(Request $request, SaleInvoice $invoice)
 
     SaleInvoiceItem::where('sale_invoice_id', $invoice->id)->delete();
 
+    $totalSubtotal = 0;
+    $totalGST = 0;
+    $totalDiscount = 0;
+
     foreach ($request->products as $product) {
+        $subtotal = $product['quantity'] * $product['unit_price'];
+        $discountAmount = ($subtotal * $product['discount']) / 100;
+        $subtotalAfterDiscount = $subtotal - $discountAmount;
+        $gstAmount = ($subtotalAfterDiscount * $product['gst_rate']) / 100;
+        $totalPrice = $subtotalAfterDiscount + $gstAmount;
+
         SaleInvoiceItem::create([
             'sale_invoice_id' => $invoice->id,
             'product_id' => $product['product_id'],
@@ -102,14 +133,29 @@ public function update(Request $request, SaleInvoice $invoice)
             'unit_price' => $product['unit_price'],
             'gst_rate' => $product['gst_rate'],
             'discount' => $product['discount'] ?? 0,
-            'total_price' => $product['total_price'],
+            'total_price' => $totalPrice,
         ]);
+
+        $totalSubtotal += $subtotal;
+        $totalDiscount += $discountAmount;
+        $totalGST += $gstAmount;
     }
 
-    $this->updatePaymentStatus($invoice);
+    $globalDiscountAmount = ($totalSubtotal * $request->global_discount) / 100;
+    $subtotalAfterGlobalDiscount = $totalSubtotal - $globalDiscountAmount;
 
-    return redirect()->route('sale_invoices.index')->with('success', 'Invoice updated successfully');
+    $globalGST = ($subtotalAfterGlobalDiscount * $totalGST) / $totalSubtotal;
+
+    $finalTotal = $subtotalAfterGlobalDiscount + $globalGST + $request->round_off;
+
+    $invoice->update([
+        'total_amount' => $finalTotal,
+        'global_gst' => $globalGST,
+    ]);
+
+    return redirect()->route('sale_invoices.index')->with('success', 'Invoice updated successfully.');
 }
+
 private function updatePaymentStatus(SaleInvoice $invoice)
 {
     $totalPaid = SalePayment::where('sale_invoice_id', $invoice->id)->sum('amount_paid');
@@ -157,7 +203,6 @@ public function storePayment(Request $request, $id)
         'payment_date' => now(),
         'status' => ($invoice->balance_due <= $validated['amount'] + $validated['round_off']) ? 'Paid' : 'Partial',
 
-
     ]);
 
     if ($invoice->balance_due <= 0) {
@@ -183,42 +228,81 @@ public function show($id)
     $invoice = SaleInvoice::with('customer', 'items.product')->findOrFail($id);
     return view('sale_invoices.show', compact('invoice'));
 }
+
+
 public function store(Request $request)
 {
-    $invoice = SaleInvoice::create([
-        'customer_id' => $request->customer_id,
-        'invoice_date' => $request->invoice_date,
-        'payment_status' => $request->payment_status,
-        'due_date' => $request->due_date,
-        'round_off' => $request->round_off ?? 0,
-        'global_discount' => $request->global_discount ?? 0,
-        'total_amount' => 0,
+    $validatedData = $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'payment_status' => 'required|string',
+        'invoice_date' => 'required|date',
+        'due_date' => 'required|date',
+        'round_off' => 'nullable|numeric',
+        'global_discount' => 'nullable|numeric',
+        'final_amount' => 'required|numeric|min:0',
+        'products' => 'required|array|min:1',
+        'products.*.product_id' => 'required|exists:products,id',
+        'products.*.quantity' => 'required|numeric|min:1',
+        'products.*.unit_price' => 'required|numeric|min:0.01',
+        'products.*.gst_rate' => 'required|numeric|min:0',
+        'products.*.discount' => 'nullable|numeric|min:0',
     ]);
 
-    $totalAmount = 0;
+    try {
+        DB::beginTransaction();
 
-    foreach ($request->products as $product) {
-        $subtotal = $product['quantity'] * $product['unit_price'];
-        $discountAmount = ($subtotal * $product['discount']) / 100;
-        $gstAmount = (($subtotal - $discountAmount) * $product['gst_rate']) / 100;
-        $totalPrice = $subtotal - $discountAmount + $gstAmount;
-
-        SaleInvoiceItem::create([
-            'sale_invoice_id' => $invoice->id,
-            'product_id' => $product['product_id'],
-            'quantity' => $product['quantity'],
-            'unit_price' => $product['unit_price'],
-            'gst_rate' => $product['gst_rate'],
-            'discount' => $product['discount'] ?? 0,
-            'total_price' => $totalPrice,
+        $invoice = SaleInvoice::create([
+            'customer_id' => $validatedData['customer_id'],
+            'invoice_date' => $validatedData['invoice_date'],
+            'payment_status' => $validatedData['payment_status'],
+            'due_date' => $validatedData['due_date'],
+            'round_off' => $validatedData['round_off'] ?? 0,
+            'global_discount' => $validatedData['global_discount'] ?? 0,
+            'total_amount' => 0,
         ]);
 
-        $totalAmount += $totalPrice;
+        $totalAmount = 0;
+
+        foreach ($validatedData['products'] as $product) {
+            $subtotal = $product['quantity'] * $product['unit_price'];
+            $discountAmount = ($subtotal * ($product['discount'] ?? 0)) / 100;
+            $subtotalAfterDiscount = $subtotal - $discountAmount;
+            $gstAmount = ($subtotalAfterDiscount * $product['gst_rate']) / 100;
+            $totalPrice = $subtotalAfterDiscount + $gstAmount;
+
+            $totalAmount += $totalPrice;
+
+            SaleInvoiceItem::create([
+                'sale_invoice_id' => $invoice->id,
+                'product_id' => $product['product_id'],
+                'quantity' => $product['quantity'],
+                'unit_price' => $product['unit_price'],
+                'gst_rate' => $product['gst_rate'],
+                'discount' => $product['discount'] ?? 0,
+                'total_price' => $totalPrice,
+            ]);
+        }
+
+        $discountAmount = ($totalAmount * ($validatedData['global_discount'] ?? 0)) / 100;
+        $finalAmount = $totalAmount - $discountAmount;
+
+        $roundedAmount = round($finalAmount, 0);
+        $roundOff = number_format($roundedAmount - $finalAmount, 2, '.', '');
+
+        $invoice->update([
+            'total_amount' => $roundedAmount,
+            'round_off' => $roundOff,
+        ]);
+
+        DB::commit();
+
+        return redirect()->route('sale_invoices.index')->with('success', 'Invoice created successfully.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Error creating invoice: ' . $e->getMessage());
     }
-
-    $invoice->update(['total_amount' => $totalAmount]);
-
-    return redirect()->route('sale_invoices.index')->with('success', 'Invoice created successfully.');
 }
     public function destroy(SaleInvoice $saleInvoice)
     {

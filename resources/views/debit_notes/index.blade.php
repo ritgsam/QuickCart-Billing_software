@@ -4,12 +4,12 @@
 
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: rgb(61, 60, 60);">
             <h4 class="mb-0"> Debit Notes</h4>
             <a href="{{ route('debit_notes.create') }}" class="btn btn-light fw-bold">+ Create Debit Note</a>
         </div>
 
-        <div class="card-body bg-light">
+        <div class="card-body"style="background-color: #f5ebe0;">
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
@@ -35,7 +35,7 @@
                                 <td>{{ $note->debit_date }}</td>
                                 <td>₹{{ number_format($note->total_amount, 2) }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('debit_notes.edit', $note->id) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('debit_notes.edit', $note->id) }}" class="btn text-white btn-sm"style="background-color: rgba(43, 42, 42, 0.694);">
                                          Edit
                                     </a>
                                     <form action="{{ route('debit_notes.destroy', $note->id) }}" method="POST" class="d-inline">

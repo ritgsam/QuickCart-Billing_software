@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="max-w-3xl mx-auto p-6 rounded-lg shadow-lg" style="background-color: #f5ebe0;">
         <h1 class="text-3xl font-bold mb-6 text-center text-gray-700"> Add New Category</h1>
 
         @if ($errors->any())

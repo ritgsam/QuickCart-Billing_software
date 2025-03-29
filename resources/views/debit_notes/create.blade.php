@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="max-w-2xl mx-auto p-6 rounded-lg shadow-lg" style="background-color: #f5ebe0;">
         <h2 class="text-2xl font-bold mb-4 text-center text-gray-700"> Create Debit Note</h2>
 
         @if ($errors->any())
@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        <form action="{{ route('debit_notes.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('debit_notes.store') }}" method="POST" class="space-y-4" >
             @csrf
 
             <div>
@@ -48,7 +48,7 @@
                 <input type="number" name="total_amount" class="w-full p-2 border rounded bg-white focus:ring focus:ring-blue-200" step="0.01" required>
             </div>
 
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition" style="background-color: rgba(43, 42, 42, 0.694);">
                  Save Debit Note
             </button>
         </form>

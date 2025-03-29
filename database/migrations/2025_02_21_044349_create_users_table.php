@@ -14,6 +14,7 @@ return new class extends Migration {
     $table->string('email')->unique();
     $table->string('password');
     $table->enum('role', ['Admin', 'Manager', 'Accountant', 'Sales'])->default('Sales');
+    $table->json('permissions')->nullable();
     $table->timestamp('last_login')->nullable();
     $table->boolean('status')->default(true);
     $table->timestamps();

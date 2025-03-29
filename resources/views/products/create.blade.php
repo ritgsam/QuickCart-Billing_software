@@ -1,89 +1,13 @@
-{{--
-@extends('layouts.app')
-
-@section('content')
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Add New Product</h1>
-
-    @if ($errors->any())
-        <div class="bg-red-200 text-red-700 p-3 mb-4 rounded">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('products.store') }}" method="POST" class="bg-white p-6 shadow rounded">
-        @csrf
-
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block font-semibold">Product Name:</label>
-                <input type="text" name="name" class="w-full p-2 border rounded" required>
-            </div>
-
-            <div>
-                <label class="block font-semibold">Category:</label>
-                <select name="category_id" class="w-full p-2 border rounded" required>
-                    <option value="">Select Category</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="block font-semibold">Purchase Price:</label>
-                <input type="number" step="0.01" name="purchase_price" class="w-full p-2 border rounded" required>
-            </div>
-
-            <div>
-                <label class="block font-semibold">Selling Price:</label>
-                <input type="number" step="0.01" name="selling_price" class="w-full p-2 border rounded" required>
-            </div>
-
-            <div>
-                <label class="block font-semibold">Stock Quantity:</label>
-                <input type="number" name="stock" class="w-full p-2 border rounded" required>
-            </div>
-
-            <div>
-                <label class="block font-semibold">GST Rate (%):</label>
-                <input type="number" step="0.01" name="gst_rate" class="w-full p-2 border rounded">
-            </div>
-
-            <div>
-                <label class="block font-semibold">Discount (%):</label>
-                <input type="number" step="0.01" name="discount" class="w-full p-2 border rounded">
-            </div>
-
-            <div>
-                <label class="block font-semibold">Status:</label>
-                <select name="visibility" class="w-full p-2 border rounded" required>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="mt-6 text-right">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Product</button>
-        </div>
-    </form>
-</div>
-@endsection --}}
 
 @extends('layouts.app')
 
 @section('content')
 <div class="container mt-4">
     <div class="card">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white" style="background-color: rgb(61, 60, 60);">
             <h4>Add New Product</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="background-color: #f5ebe0;">
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -114,7 +38,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <label for="purchase_price" class="form-label">Purchase Price:</label>
@@ -151,9 +74,12 @@
                         </select>
                     </div>
                 </div>
-
+<div class="mb-3">
+                        <label for="hsn_code" class="form-label">HSN Code</label>
+                        <input type="text" class="form-control" id="hsn_code" name="hsn_code" value="{{ old('hsn_code', $product->hsn_code ?? '') }}" style="width: 20%">
+                    </div>
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-success">Save Product</button>
+                    <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Save Product</button>
                 </div>
 
             </form>

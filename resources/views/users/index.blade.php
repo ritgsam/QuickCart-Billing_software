@@ -3,12 +3,12 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: rgb(61, 60, 60);">
             <h4 class="mb-0">User Management</h4>
             <a href="{{ route('users.create') }}" class="btn btn-light">+ Add New User</a>
         </div>
 
-        <div class="card-body bg-light">
+        <div class="card-body"style="background-color: #f5ebe0;">
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
@@ -42,7 +42,7 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm mx-1">Edit</a>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn text-white btn-sm mx-1" style="background-color: rgba(43, 42, 42, 0.694);">Edit</a>
                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
                                       onsubmit="return confirm('Are you sure you want to delete this user?');">
                                     @csrf

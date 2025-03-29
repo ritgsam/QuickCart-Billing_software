@@ -1,55 +1,65 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Edit Supplier</h1>
-
-    @if ($errors->any())
-        <div class="bg-red-200 text-red-700 p-3 mb-4">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header text-white" style="background-color: rgb(61, 60, 60);">
+            <h4 class="mb-0">Edit Supplier</h4>
         </div>
-    @endif
+        <div class="card-body" style="background-color: #f5ebe0;">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-    <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+            <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-        <div class="mb-4">
-            <label class="block">Company Name:</label>
-            <input type="text" name="company_name" value="{{ $supplier->company_name }}" class="w-full p-2 border rounded">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Company Name *</label>
+                        <input type="text" name="company_name" class="form-control" value="{{ $supplier->company_name }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-control" value="{{ $supplier->email }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone *</label>
+                        <input type="text" name="phone" class="form-control" value="{{ $supplier->phone }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">GST Number</label>
+                        <input type="text" name="gst_number" class="form-control" value="{{ $supplier->gst_number }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Address *</label>
+                        <textarea name="address" class="form-control" rows="3" required>{{ $supplier->address }}</textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Payment Terms</label>
+                        <input type="text" name="payment_terms" class="form-control" value="{{ $supplier->payment_terms }}">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('suppliers.index') }}" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Update Supplier</button>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-4">
-            <label class="block">Email:</label>
-            <input type="email" name="email" value="{{ $supplier->email }}" class="w-full p-2 border rounded">
-        </div>
-
-        <div class="mb-4">
-            <label class="block">Phone:</label>
-            <input type="text" name="phone" value="{{ $supplier->phone }}" class="w-full p-2 border rounded">
-        </div>
-
-        <div class="col-md-12">
-    <label class="form-label">Address:</label>
-    <textarea name="address" class="form-control" rows="3" required>{{ $supplier->address }}</textarea>
-</div>
-
-
-        <div class="mb-4">
-            <label class="block">GST Number:</label>
-            <input type="text" name="gst_number" value="{{ $supplier->gst_number }}" class="w-full p-2 border rounded">
-        </div>
-
-        <div class="mb-4">
-            <label class="block">Payment Terms:</label>
-            <input type="text" name="payment_terms" value="{{ $supplier->payment_terms }}" class="w-full p-2 border rounded">
-        </div>
-
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Update</button>
-    </form>
+    </div>
 </div>
 @endsection

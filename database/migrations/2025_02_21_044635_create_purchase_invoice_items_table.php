@@ -16,7 +16,7 @@ return new class extends Migration {
         $table->decimal('gst_rate', 5, 2)->default(0);
         $table->decimal('discount', 5, 2)->default(0);
         $table->decimal('tax', 5, 2)->default(0);
-
+            $table->decimal('tax', 5, 2)->default(0)->after('unit_price');
         $table->decimal('total_price', 10, 2);
         $table->timestamps();
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="max-w-2xl mx-auto p-6 rounded-lg shadow-lg" style="background-color: #f5ebe0;">
         <h2 class="text-2xl font-bold mb-4 text-center">Create User</h2>
 
         @if ($errors->any())
@@ -57,7 +57,7 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Create User</button>
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" style="background-color: rgba(43, 42, 42, 0.694);">Create User</button>
             </div>
         </form>
     </div>

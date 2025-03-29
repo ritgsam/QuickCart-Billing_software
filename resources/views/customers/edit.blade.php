@@ -6,10 +6,10 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-warning text-white text-center">
+                <div class="card-header  text-white text-center" style="background-color: rgb(61, 60, 60);">
                     <h4>Edit Customer</h4>
                 </div>
-                <div class="card-body bg-light">
+                <div class="card-body" style="background-color: #f5ebe0;">
 
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -48,7 +48,7 @@
 
 
                             <div class="col-md-12 text-center mt-3">
-                                <button type="submit" class="btn btn-success px-4">Update</button>
+                                <button type="submit" class="btn px-4 text-white" style="background-color: rgba(43, 42, 42, 0.694);">Update</button>
                                 <a href="{{ route('customers.index') }}" class="btn btn-secondary px-4">Cancel</a>
                             </div>
                         </div>

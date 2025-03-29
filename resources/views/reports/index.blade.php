@@ -3,47 +3,47 @@
 @section('content')
 <div class="container mt-5">
     <div class="text-center">
-        <h1 class="fw-bold text-primary mb-4"> Reports Dashboard</h1>
-        <p class="text-muted">Reports for sales, purchases, stock, and financials.</p>
+        <h1 class="fw-bold text-dark mb-4"> Reports Dashboard</h1>
+        <p class="text-secondary fs-5">Analyze your sales, purchases, stock, and financial reports.</p>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        <div class="col">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title text-primary fw-bold">📈 Sales Reports</h4>
-                    <p class="card-text text-muted">Track sales by customer, product, and time period.</p>
-                    <a href="{{ route('reports.sales') }}" class="btn btn-primary w-100 fw-semibold">View Sales Reports</a>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-3 h-100" style="background-color: #f5ebe0;"">
+                <div class="card-body text-center p-5">
+                    <h2 class="fw-bold text-danger">📈 Sales Reports</h2>
+                    <p class="fs-5 text-muted">Track sales by customer, product, and time period.</p>
+                    <a href="{{ route('reports.sales') }}" class="btn btn-danger btn-lg w-75 mt-3 rounded-pill">View Reports</a>
                 </div>
             </div>
         </div>
 
-        <div class="col">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title text-warning fw-bold">📉 Purchase Reports</h4>
-                    <p class="card-text text-muted">Analyze purchases by supplier and pending payments.</p>
-                    <a href="{{ route('reports.purchases') }}" class="btn btn-warning w-100 fw-semibold">View Purchase Reports</a>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-3 h-100" style="background-color: #f5ebe0;"">
+                <div class="card-body text-center p-5">
+                    <h2 class="fw-bold text-danger">📉 Purchase Reports</h2>
+                    <p class="fs-5 text-muted">Analyze purchases by supplier and pending payments.</p>
+                    <a href="{{ route('reports.purchases') }}" class="btn btn-danger btn-lg w-75 mt-3 rounded-pill">View Reports</a>
                 </div>
             </div>
         </div>
 
-        <div class="col">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title text-success fw-bold">📦 Stock Reports</h4>
-                    <p class="card-text text-muted">Monitor low stock alerts and stock movements.</p>
-                    <a href="{{ route('reports.stock') }}" class="btn btn-success w-100 fw-semibold">View Stock Reports</a>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-3 h-100" style="background-color: #f5ebe0;">
+                <div class="card-body text-center p-5">
+                    <h2 class="fw-bold text-danger bi bi-box-seam"> Stock Reports</h2>
+                    <p class="fs-5 text-muted">Monitor low stock alerts and stock movements.</p>
+                    <a href="{{ route('reports.stock') }}" class="btn btn-danger btn-lg w-75 mt-3 rounded-pill">View Reports</a>
                 </div>
             </div>
         </div>
 
-        <div class="col">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title text-danger fw-bold">💰 Financial Reports</h4>
-                    <p class="card-text text-muted">Review profit & loss statements and cash flow.</p>
-                    <a href="{{ route('reports.financial') }}" class="btn btn-danger w-100 fw-semibold">View Financial Reports</a>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-3 h-100" style="background-color: #f5ebe0;">
+                <div class="card-body text-center p-5">
+                    <h2 class="fw-bold text-danger bi bi-bank"> Financial Reports</h2>
+                    <p class="fs-5 text-muted">Review profit & loss statements and cash flow.</p>
+                    <a href="{{ route('reports.financial') }}" class="btn btn-danger btn-lg w-75 mt-3 rounded-pill">View Reports</a>
                 </div>
             </div>
         </div>

@@ -3,12 +3,12 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: rgb(61, 60, 60);">
             <h4 class="mb-0">Product List</h4>
             <a href="{{ route('products.create') }}" class="btn btn-light">+ Add Product</a>
         </div>
 
-        <div class="card-body bg-light">
+        <div class="card-body" style="background-color: #f5ebe0;">
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
@@ -34,9 +34,10 @@
             <div class="table-responsive">
                 <table class="table table-hover table-bordered">
                     <thead class="table-dark">
-                        <tr>
+                    <tr>
                             <th>Name</th>
                             <th>SKU</th>
+                            <th>HSN Code</th>
                             <th>Category</th>
                             <th>Price (₹)</th>
                             <th>Stock</th>
@@ -50,13 +51,14 @@
                         <tr>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->sku }}</td>
+                            <td>{{ $product->hsn_code ?? 'N/A' }}</td>
                             <td>{{ $product->category->name ?? 'N/A' }}</td>
                             <td>₹{{ number_format($product->selling_price, 2) }}</td>
                             <td>{{ $product->stock }}</td>
                             <td>{{ $product->gst_rate }}%</td>
                             <td>{{ $product->discount }}%</td>
                             <td class="text-center">
-                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ route('products.edit', $product->id) }}" class="btn text-white btn-sm" style="background-color: rgba(43, 42, 42, 0.694);">Edit</a>
                                 <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"
                                       onsubmit="return confirm('Are you sure you want to delete this product?');">
                                     @csrf

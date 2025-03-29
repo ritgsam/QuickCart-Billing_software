@@ -8,6 +8,7 @@ return new class extends Migration {
 {
     Schema::table('categories', function (Blueprint $table) {
         $table->enum('status', ['Active', 'Inactive'])->default('Active');
+        $table->text('description')->nullable();
     });
 }
 
@@ -15,6 +16,7 @@ public function down()
 {
     Schema::table('categories', function (Blueprint $table) {
         $table->dropColumn('status');
+        $table->dropColumn('description');
     });
 }
 };

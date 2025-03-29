@@ -11,13 +11,12 @@ class AuthLogoutMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // If user is logged in and the session is expired, logout
         if (Auth::check()) {
             if (!session()->has('last_activity')) {
                 session()->put('last_activity', now());
             }
 
-            $inactiveLimit = 60 * 60; // 1 hour inactivity logout (set as needed)
+            $inactiveLimit = 60 * 60;
             $lastActivity = session('last_activity');
             if ($lastActivity && now()->diffInSeconds($lastActivity) > $inactiveLimit) {
                 Auth::logout();

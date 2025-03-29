@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('credit_notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_invoice_id')->constrained()->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade'); // ✅ Correct customer_id
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade'); 
             $table->date('credit_date');
             $table->decimal('actual_amount', 10, 2);
             $table->decimal('tax_amount', 10, 2)->default(0);

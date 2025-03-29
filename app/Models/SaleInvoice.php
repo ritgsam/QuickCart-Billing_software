@@ -11,7 +11,7 @@ class SaleInvoice extends Model
     protected $fillable = [
         'invoice_number', 'customer_id', 'invoice_date', 'total_amount',
         'discount', 'tax', 'payment_status', 'due_date',
-        'invoice_notes', 'sales_executive_id','global_discount',
+        'invoice_notes', 'sales_executive_id','global_discount','final_amount'
     ];
 protected static function boot()
     {
@@ -45,6 +45,15 @@ public function getBalanceDueAttribute()
 {
     $paidAmount = $this->payments->sum('amount') + $this->payments->sum('round_off');
     return $this->total_amount - $paidAmount;
+}
+public function getTaxPercentageAttribute()
+{
+    return $this->tax ?? 0;
+}
+
+public function getDiscountPercentageAttribute()
+{
+    return $this->discount ?? 0;
 }
 
 }

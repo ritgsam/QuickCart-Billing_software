@@ -38,6 +38,7 @@
                     <th class="px-4 py-2 border">Quantity</th>
                     <th class="px-4 py-2 border">Unit Price</th>
                     <th class="px-4 py-2 border">Tax (%)</th>
+                    <th class="px-4 py-2 border">Discount (%)</th>
                     <th class="px-4 py-2 border">Total</th>
                 </tr>
             </thead>
@@ -90,7 +91,7 @@
             <textarea name="invoice_notes" class="w-full p-2 border rounded">{{ $invoice->invoice_notes }}</textarea>
         </div>
 
-        <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Update Invoice</button>
+        <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded" style="background-color: rgba(43, 42, 42, 0.694);">Update Invoice</button>
     </form>
 </div>
 <script>

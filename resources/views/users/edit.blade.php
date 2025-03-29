@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Edit User</h2>
+    <h2><b>Edit User</b></h2>
     <form action="{{ route('users.update', $user->id) }}" method="POST">
         @csrf @method('PUT')
         <div class="mb-3">
@@ -22,7 +22,7 @@
                 <option value="Sales" {{ $user->role == 'Sales' ? 'selected' : '' }}>Sales</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-success">Update</button>
+        <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Update</button>
     </form>
 </div>
 @endsection

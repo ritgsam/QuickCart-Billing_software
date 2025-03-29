@@ -43,6 +43,7 @@ public function update(Request $request, Products $product)
         'gst_rate' => 'nullable|numeric|min:0',
         'discount' => 'nullable|numeric|min:0',
         'visibility' => 'required|boolean',
+'hsn_code' => 'nullable|string|max:15',
     ]);
 
     $product->update([
@@ -54,6 +55,7 @@ public function update(Request $request, Products $product)
         'gst_rate' => $request->gst_rate ?? 0,
         'discount' => $request->discount ?? 0,
         'visibility' => $request->visibility,
+    'hsn_code' => $request->hsn_code,
     ]);
 
     return redirect()->route('products.index')->with('success', 'Product updated successfully.');
@@ -76,6 +78,7 @@ public function store(Request $request)
         'gst_rate' => 'nullable|numeric|min:0',
         'discount' => 'nullable|numeric|min:0',
         'visibility' => 'required|boolean',
+        'hsn_code' => 'nullable|string|max:15',
     ]);
 
     $product = Products::create([
@@ -88,6 +91,7 @@ public function store(Request $request)
         'gst_rate' => $request->gst_rate ?? 0,
         'discount' => $request->discount ?? 0,
         'visibility' => $request->visibility,
+    'hsn_code' => $request->hsn_code,
     ]);
 
     return redirect()->route('products.index')->with('success', 'Product created successfully.');

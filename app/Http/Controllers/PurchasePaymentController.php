@@ -9,7 +9,7 @@ use App\Models\Supplier;
 class PurchasePaymentController extends Controller {
 public function index()
 {
-    $purchasePayments = PurchasePayment::with(['purchaseInvoice.supplier'])->get(); // ✅ Ensure invoice and supplier are fetched
+    $purchasePayments = PurchasePayment::with(['purchaseInvoice.supplier'])->get(); 
     return view('purchase_payments.index', compact('purchasePayments'));
 }
 
@@ -20,21 +20,30 @@ public function create()
     $invoices = PurchaseInvoice::all();
     return view('purchase_payments.create', compact('suppliers', 'invoices'));
 }
-
-
-
-    public function store(Request $request)
+public function store(Request $request)
 {
     $request->validate([
         'purchase_invoice_id' => 'required|exists:purchase_invoices,id',
         'supplier_id' => 'required|exists:suppliers,id',
         'amount_paid' => 'required|numeric|min:0',
-        'discount' => 'nullable|numeric|min:0',
-        'gst' => 'nullable|numeric|min:0',
         'round_off' => 'nullable|numeric|min:0',
         'balance_due' => 'required|numeric|min:0',
         'payment_mode' => 'required|string',
         'status' => 'required|string',
+    ]);
+
+    $invoice = PurchaseInvoice::findOrFail($request->purchase_invoice_id);
+
+    $totalPaid = $invoice->payments()->sum('amount_paid') + $request->amount_paid;
+    $newBalanceDue = $invoice->total_amount + $invoice->round_off - $totalPaid;
+
+    if ($newBalanceDue < 0) {
+        $newBalanceDue = 0;
+    }
+
+    $invoice->update([
+        'balance_due' => $newBalanceDue,
+        'payment_status' => $newBalanceDue <= 0 ? 'Paid' : 'Partial',
     ]);
 
     PurchasePayment::create([
@@ -42,12 +51,10 @@ public function create()
         'supplier_id' => $request->supplier_id,
         'payment_date' => $request->payment_date ?? now(),
         'amount_paid' => $request->amount_paid,
-        'discount' => $request->discount ?? 0,
-        'gst' => $request->gst ?? 0,
         'round_off' => $request->round_off ?? 0,
-        'balance_due' => $request->balance_due,
+        'balance_due' => $newBalanceDue,
         'payment_mode' => $request->payment_mode,
-        'status' => $request->status,
+        'status' => $newBalanceDue <= 0 ? 'Paid' : 'Partial',
     ]);
 
     return redirect()->route('purchase_payments.index')->with('success', 'Payment recorded successfully!');

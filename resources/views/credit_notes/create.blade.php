@@ -3,10 +3,10 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white" style="background-color: rgb(61, 60, 60);">
             <h4 class="mb-0">Create Credit Note</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="background-color: #f5ebe0;">
             <form action="{{ route('credit_notes.store') }}" method="POST">
                 @csrf
 
@@ -39,7 +39,7 @@
 
                 <div class="d-flex justify-content-end">
                     <a href="{{ route('credit_notes.index') }}" class="btn btn-secondary me-2">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Credit Note</button>
+                    <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Save Credit Note</button>
                 </div>
             </form>
         </div>

@@ -4,7 +4,6 @@
 <div class="container mx-auto p-6">
     <h1 class="text-3xl font-bold mb-6">Edit Sales Invoice</h1>
 
-    {{-- <form action="{{ route('sale_invoices.update', $invoice->id) }}" method="POST"> --}}
 <form action="{{ url('sale-invoices/' . $invoice->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -69,7 +68,7 @@
         </table>
 
         <div class="mt-6 flex space-x-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Invoice</button>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded" style="background-color: rgba(43, 42, 42, 0.694);>Update Invoice</button>
             <a href="{{ route('sale_invoices.index') }}" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</a>
         </div>
     </form>

@@ -12,7 +12,7 @@
     @endif
 
     <div class="card shadow-lg border-0">
-        <div class="card-body">
+        <div class="card-body" style="background-color: #f5ebe0;">
             <form action="{{ route('products.update', $product->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -101,9 +101,12 @@
                         <span class="text-danger text-sm">{{ $message }}</span>
                         @enderror
                     </div>
-
+                    <div class="mb-3">
+                        <label for="hsn_code" class="form-label">HSN Code</label>
+                        <input type="text" class="form-control" id="hsn_code" name="hsn_code" value="{{ old('hsn_code', $product->hsn_code ?? '') }}" style="width: 20%">
+                    </div>
                     <div class="col-md-12 text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-4">Update Product</button>
+                        <button type="submit" class="btn text-white px-4" style="background-color: rgba(43, 42, 42, 0.694);">Update Product</button>
                         <a href="{{ route('products.index') }}" class="btn btn-secondary px-4">Cancel</a>
                     </div>
                 </div>

@@ -37,7 +37,7 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success">Update</button>
+        <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Update</button>
     </form>
 </div>
 @endsection

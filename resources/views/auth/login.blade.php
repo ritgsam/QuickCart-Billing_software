@@ -1,41 +1,9 @@
-{{-- @extends('layouts.app')
 
-@section('content')
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Login</h1>
-
-    @if ($errors->any())
-        <div class="bg-red-200 text-red-700 p-3 mb-4">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <div class="mb-4">
-            <label class="block">Email:</label>
-            <input type="email" name="email" class="w-80 p-2 border rounded" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="block">Password:</label>
-            <input type="password" name="password" class="w-80 p-2 border rounded" required>
-        </div>
-
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
-    </form>
-</div>
-@endsection --}}
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-lg border-0 p-4" style="width: 400px;">
+<div class="d-flex justify-content-center align-items-center vh-100" >
+    <div class="card shadow-lg border-0 p-4" style=" width: 400px; height: 9cm; background-color: rgba(43, 42, 42, 0.694);"
         {{-- <div class="card-header bg-primary text-white text-center">
             <h4>Login</h4>
         </div> --}}

@@ -50,7 +50,7 @@
             <input type="number" step="0.01" name="total_amount" class="form-control" value="{{ $debitNote->total_amount }}" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Debit Note</button>
+        <button type="submit" class="btn text-white" style="background-color: rgba(43, 42, 42, 0.694);">Update Debit Note</button>
         <a href="{{ route('debit_notes.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
