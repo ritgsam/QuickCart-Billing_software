@@ -120,10 +120,6 @@ Route::resource('sale_invoices', SaleInvoiceController::class);
 
 Route::resource('products', ProductController::class);
 
-
-Route::resource('products', ProductController::class);
-
-
 Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
