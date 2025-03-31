@@ -39,7 +39,7 @@ public function store(Request $request)
         'transaction_id' => $request->transaction_id ?? null,
         'payment_mode' => $request->payment_mode ?? 'Cash',
         'round_off' => $roundOff,
-        'balance_due' => $newBalanceDue, 
+        'balance_due' => $newBalanceDue,
     ]);
 
     return redirect()->route('sale_payments.index')->with('success', 'Payment Added Successfully!');
@@ -61,8 +61,8 @@ public function edit($id)
 
 public function create()
 {
-    $customers = Customer::all(); 
-    $invoices = SaleInvoice::all(); 
+    $customers = Customer::all();
+    $invoices = SaleInvoice::all();
     return view('sale_payments.create', compact('customers', 'invoices'));
 }
 
@@ -80,11 +80,10 @@ public function getInvoiceDetails($invoiceId)
         'payment_status' => $invoice->payment_status ?? 'Unpaid',
         'payment_mode' => $invoice->payment_mode ?? 'Cash',
         'total_amount' => round($invoice->total_amount, 2),
-        'balance_due' => round($balanceDue, 2),
+        'balance_due' => round($balanceDue, precision: 2),
         'round_off' => round($roundOff, 2),
     ]);
 }
-
 
 public function update(Request $request, SalePayment $salePayment)
 {

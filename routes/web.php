@@ -25,6 +25,7 @@ use App\Models\SaleInvoice;
 use App\Models\PurchaseInvoice;
 
 
+
 Route::get('/get-purchase-invoice-details/{invoiceId}', function ($invoiceId) {
     $invoice = PurchaseInvoice::find($invoiceId);
 
@@ -35,10 +36,10 @@ Route::get('/get-purchase-invoice-details/{invoiceId}', function ($invoiceId) {
     return response()->json([
         'invoice' => [
             'invoice_date' => $invoice->invoice_date,
-            'supplier_id' => $invoice->supplier_id, 
+            'supplier_id' => $invoice->supplier_id,
             'total_amount' => $invoice->total_amount,
             'round_off' => $invoice->round_off,
-            'balance_due' => $invoice->balance_due, 
+            'balance_due' => $invoice->balance_due,
         ]
     ]);
 });
@@ -68,9 +69,9 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
+// Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
 
-Route::post('/settings/update-permissions/{id}', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions');
+// Route::post('/settings/update-permissions/{id}', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions');
 
 Route::post('/users/{user}/assign-permissions', [UserController::class, 'assignPermissions'])->name('users.assignPermissions');
 
@@ -79,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/update-profile', [SettingsController::class, 'updateProfile'])->name('settings.updateProfile');
     Route::post('/settings/update-company', [SettingsController::class, 'updateCompany'])->name('settings.updateCompany');
-    Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
+    Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole1');
     Route::get('/settings/delete-user/{id}', [SettingsController::class, 'deleteUser'])->name('settings.deleteUser');
     Route::get('/settings/add-user', [SettingsController::class, 'addUser'])->name('settings.addUser');
 });
@@ -91,7 +92,7 @@ Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edi
 Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-Route::resource('users', UserController::class);
+// Route::resource('users', UserController::class);
 
 Route::post('/credit_notes', [CreditNoteController::class, 'store'])->name('credit_notes.store');
 Route::get('/credit_notes', [CreditNoteController::class, 'index'])->name('credit_notes.index');
@@ -113,7 +114,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::resource('products', ProductController::class);
+// Route::resource('products', ProductController::class);
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -135,14 +136,14 @@ Route::delete('products/{product}', [ProductController::class, 'destroy'])
      ->name('products.destroy');
 
 
-Route::resource('sales-payments', SalePaymentController::class);
+// Route::resource('sales-payments', SalePaymentController::class);
 
 Route::resource('purchase-payments', PurchasePaymentController::class);
 
-Route::resource('sale-payments', SalePaymentController::class);
+// Route::resource('sale-payments', SalePaymentController::class);
 Route::resource('roles', RoleController::class);
 Route::get('/sale-payments', [SalePaymentController::class, 'index'])->name('sale-payments.index');
-Route::resource('purchase-invoices', PurchaseInvoiceController::class);
+// Route::resource('purchase-invoices', PurchaseInvoiceController::class);
 Route::post('/payments/store', [SalePaymentController::class, 'store'])->name('payments.store');
 
 
@@ -155,7 +156,7 @@ Route::post('/purchase-payments/store', [PurchasePaymentController::class, 'stor
 
 Route::resource('sale_payments', SalePaymentController::class);
 
-Route::get('/sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'pdf'])->name('sale_invoices.pdf');
+// Route::get('/sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'pdf'])->name('sale_invoices.pdf');
 
 // Route::get('/purchase_invoices/{id}/pdf', [PurchaseInvoiceController::class, 'pdf'])->name('purchase_invoices.pdf');
 
@@ -173,11 +174,11 @@ Route::get('/purchase_invoices/{id}', [PurchaseInvoiceController::class, 'show']
 Route::get('/sale_invoices/{id}/edit', [SaleInvoiceController::class, 'edit'])->name('sale_invoices.edit');
 Route::put('/sale-invoices/{sale_invoice}', [SaleInvoiceController::class, 'update'])->name('sale_invoices.update');
 
-Route::get('sale_invoices/{id}', [SaleInvoiceController::class, 'show'])->name('sale_invoices.show');
+// Route::get('sale_invoices/{id}', [SaleInvoiceController::class, 'show'])->name('sale_invoices.show');
 
-Route::get('sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'generatePDF'])->name('sale_invoices.pdf');
+// Route::get('sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'generatePDF'])->name('sale_invoices.pdf');
 
-Route::resource('sale_invoices', SaleInvoiceController::class);
+// Route::resource('sale_invoices', SaleInvoiceController::class);
 
 
 Route::resource('products', ProductController::class);

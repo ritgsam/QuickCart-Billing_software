@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Remove final_amount column if it exists
         Schema::table('sale_invoices', function (Blueprint $table) {
             if (Schema::hasColumn('sale_invoices', 'final_amount')) {
                 $table->dropColumn('final_amount');
@@ -34,7 +33,6 @@ return new class extends Migration {
     {
         Schema::dropIfExists('sale_invoices');
 
-        // Re-add final_amount if rolling back
         Schema::table('sale_invoices', function (Blueprint $table) {
             if (!Schema::hasColumn('sale_invoices', 'final_amount')) {
                 $table->decimal('final_amount', 10, 2)->default(0);

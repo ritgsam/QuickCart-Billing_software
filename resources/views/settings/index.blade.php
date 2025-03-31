@@ -65,7 +65,7 @@
                     <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded">Update Settings</button>
                 </form>
             </div>
-<div class="w-full md:w-3/4 shadow-lg rounded-lg p-6 animate-slide-in" style="background-color: rgb(238, 231, 231)">
+{{-- <div class="w-full md:w-3/4 shadow-lg rounded-lg p-6 animate-slide-in" style="background-color: rgb(238, 231, 231)"> --}}
             <div id="user-management" class="settings-section hidden">
                 <h2 class="text-xl font-semibold mb-4">User & Role Management</h2>
                 <div class="text-right mb-4">
@@ -105,42 +105,7 @@
                                 @php
                                     $userPermissions = is_string($user->permissions) ? json_decode($user->permissions, true) : $user->permissions ?? [];
                                 @endphp
-
-                                {{-- <td class="p-3 border">
-                                    <form action="{{ route('settings.updatePermissions', $user->id) }}" method="POST">
-                                        @csrf
-
-                                        <label class="flex items-center justify-between">
-                                            <span>View Sales</span>
-                                            <label class="switch">
-                                                <input type="checkbox" name="permissions[]" value="view_sales"
-                                                    {{ in_array('view_sales', $userPermissions) ? 'checked' : '' }}>
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </label>
-
-                                        <label class="flex items-center justify-between mt-2">
-                                            <span>Approve Transactions</span>
-                                            <label class="switch">
-                                                <input type="checkbox" name="permissions[]" value="approve_transactions"
-                                                    {{ in_array('approve_transactions', $userPermissions) ? 'checked' : '' }}>
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </label>
-
-                                        <label class="flex items-center justify-between mt-2">
-                                            <span>View Reports</span>
-                                            <label class="switch">
-                                                <input type="checkbox" name="permissions[]" value="view_reports"
-                                                    {{ in_array('view_reports', $userPermissions) ? 'checked' : '' }}>
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </label>
-
-                                        <button type="submit" class="bg-gray-500 text-white px-3 py-1 rounded mt-2 w-full">Update</button>
-                                    </form> --}}
                                 </td>
-
                                 <td class="p-3 border text-center">
                                     <a href="{{ route('settings.deleteUser', $user->id) }}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</a>
                                 </td>

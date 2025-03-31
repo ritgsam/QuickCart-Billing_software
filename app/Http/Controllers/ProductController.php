@@ -43,7 +43,7 @@ public function update(Request $request, Products $product)
         'gst_rate' => 'nullable|numeric|min:0',
         'discount' => 'nullable|numeric|min:0',
         'visibility' => 'required|boolean',
-'hsn_code' => 'nullable|string|max:15',
+        'hsn_code' => 'nullable|string|max:15',
     ]);
 
     $product->update([

@@ -10,7 +10,7 @@ use App\Models\SalePayment;
 use App\Models\SaleInvoiceItem;
 use Illuminate\Support\Facades\DB;
 use App\Libraries\MyFPDF;
-
+// index,create,store,show,update,destroy
 class SaleInvoiceController extends Controller
 {
 public function index(Request $request)
