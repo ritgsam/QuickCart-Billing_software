@@ -16,32 +16,15 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
-public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:customers,email,' . $id,
-        'phone' => 'required|string|max:15',
-        'address' => 'required|string|max:500',
-    ]);
-
-    $customer = Customer::findOrFail($id);
-    $customer->update($validated);
-
-    return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
-}
-
-
-
-    public function edit(Customer $customer)
-{
-    return view('customers.edit', compact('customer'));
-}
 
     public function create()
     {
         return view('customers.create');
     }
+   public function edit(Customer $customer)
+{
+    return view('customers.edit', compact('customer'));
+}
 
     public function store(Request $request)
 {
@@ -60,5 +43,21 @@ public function update(Request $request, $id)
 
     return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
 }
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:customers,email,' . $id,
+        'phone' => 'required|string|max:15',
+        'address' => 'required|string|max:500',
+    ]);
+
+    $customer = Customer::findOrFail($id);
+    $customer->update($validated);
+
+    return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
+}
+
+
 
 }

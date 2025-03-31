@@ -9,6 +9,25 @@ use Illuminate\Support\Facades\Log;
 
 class SalePaymentController extends Controller
 {
+
+public function index()
+{
+    $payments = SalePayment::with('saleInvoice')->get();
+    return view('sale_payments.index', compact('payments'));
+}
+public function create()
+{
+    $customers = Customer::all();
+    $invoices = SaleInvoice::all();
+    return view('sale_payments.create', compact('customers', 'invoices'));
+}
+public function edit($id)
+{
+    $salePayment = SalePayment::findOrFail($id);
+    $invoices = SaleInvoice::all();
+
+    return view('sale_payments.edit', compact('salePayment', 'invoices'));
+}
 public function store(Request $request)
 {
     $request->validate([
@@ -44,28 +63,6 @@ public function store(Request $request)
 
     return redirect()->route('sale_payments.index')->with('success', 'Payment Added Successfully!');
 }
-
-public function index()
-{
-    $payments = SalePayment::with('saleInvoice')->get();
-    return view('sale_payments.index', compact('payments'));
-}
-
-public function edit($id)
-{
-    $salePayment = SalePayment::findOrFail($id);
-    $invoices = SaleInvoice::all();
-
-    return view('sale_payments.edit', compact('salePayment', 'invoices'));
-}
-
-public function create()
-{
-    $customers = Customer::all();
-    $invoices = SaleInvoice::all();
-    return view('sale_payments.create', compact('customers', 'invoices'));
-}
-
 public function getInvoiceDetails($invoiceId)
 {
     $invoice = SaleInvoice::with(['customer', 'items', 'payments'])->findOrFail($invoiceId);

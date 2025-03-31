@@ -9,16 +9,20 @@ use App\Models\Supplier;
 class PurchasePaymentController extends Controller {
 public function index()
 {
-    $purchasePayments = PurchasePayment::with(['purchaseInvoice.supplier'])->get(); 
+    $purchasePayments = PurchasePayment::with(['purchaseInvoice.supplier'])->get();
     return view('purchase_payments.index', compact('purchasePayments'));
 }
-
-
 public function create()
 {
     $suppliers = Supplier::all();
     $invoices = PurchaseInvoice::all();
     return view('purchase_payments.create', compact('suppliers', 'invoices'));
+}
+public function edit($id)
+{
+    $purchasePayment = PurchasePayment::findOrFail($id);
+    $invoices = PurchaseInvoice::all();
+    return view('purchase_payments.edit', compact('purchasePayment', 'invoices'));
 }
 public function store(Request $request)
 {
@@ -58,13 +62,6 @@ public function store(Request $request)
     ]);
 
     return redirect()->route('purchase_payments.index')->with('success', 'Payment recorded successfully!');
-}
-
-public function edit($id)
-{
-    $purchasePayment = PurchasePayment::findOrFail($id);
-    $invoices = PurchaseInvoice::all();
-    return view('purchase_payments.edit', compact('purchasePayment', 'invoices'));
 }
 
 public function update(Request $request, PurchasePayment $purchasePayment)
