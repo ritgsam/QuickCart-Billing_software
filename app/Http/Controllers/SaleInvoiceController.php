@@ -10,7 +10,6 @@ use App\Models\SalePayment;
 use App\Models\SaleInvoiceItem;
 use Illuminate\Support\Facades\DB;
 use App\Libraries\MyFPDF;
-// index,create,store,show,update,destroy
 class SaleInvoiceController extends Controller
 {
 public function index(Request $request)
@@ -40,7 +39,87 @@ public function index(Request $request)
     return view('sale_invoices.index', compact('saleInvoices', 'customers'));
 }
 
+public function create()
+{
+    $customers = Customer::all();
+    $products = Products::all();
+    return view('sale_invoices.create', compact('customers', 'products'));
+}
 
+public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'payment_status' => 'required|string',
+        'invoice_date' => 'required|date',
+        'due_date' => 'required|date',
+        'round_off' => 'nullable|numeric',
+        'global_discount' => 'nullable|numeric',
+        'final_amount' => 'required|numeric|min:0',
+        'products' => 'required|array|min:1',
+        'products.*.product_id' => 'required|exists:products,id',
+        'products.*.quantity' => 'required|numeric|min:1',
+        'products.*.unit_price' => 'required|numeric|min:0.01',
+        'products.*.gst_rate' => 'required|numeric|min:0',
+        'products.*.discount' => 'nullable|numeric|min:0',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        $invoice = SaleInvoice::create([
+            'customer_id' => $validatedData['customer_id'],
+            'invoice_date' => $validatedData['invoice_date'],
+            'payment_status' => $validatedData['payment_status'],
+            'due_date' => $validatedData['due_date'],
+            'round_off' => $validatedData['round_off'] ?? 0,
+            'global_discount' => $validatedData['global_discount'] ?? 0,
+            'total_amount' => 0,
+        ]);
+
+        $totalAmount = 0;
+
+        foreach ($validatedData['products'] as $product) {
+            $subtotal = $product['quantity'] * $product['unit_price'];
+            $discountAmount = ($subtotal * ($product['discount'] ?? 0)) / 100;
+            $subtotalAfterDiscount = $subtotal - $discountAmount;
+            $gstAmount = ($subtotalAfterDiscount * $product['gst_rate']) / 100;
+            $totalPrice = $subtotalAfterDiscount + $gstAmount;
+
+            $totalAmount += $totalPrice;
+
+            SaleInvoiceItem::create([
+                'sale_invoice_id' => $invoice->id,
+                'product_id' => $product['product_id'],
+                'quantity' => $product['quantity'],
+                'unit_price' => $product['unit_price'],
+                'gst_rate' => $product['gst_rate'],
+                'discount' => $product['discount'] ?? 0,
+                'total_price' => $totalPrice,
+            ]);
+        }
+
+        $discountAmount = ($totalAmount * ($validatedData['global_discount'] ?? 0)) / 100;
+        $finalAmount = $totalAmount - $discountAmount;
+
+        $roundedAmount = round($finalAmount, 0);
+        $roundOff = number_format($roundedAmount - $finalAmount, 2, '.', '');
+
+        $invoice->update([
+            'total_amount' => $roundedAmount,
+            'round_off' => $roundOff,
+        ]);
+
+        DB::commit();
+
+        return redirect()->route('sale_invoices.index')->with('success', 'Invoice created successfully.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Error creating invoice: ' . $e->getMessage());
+    }
+}
 public function generatePdf($id)
 {
     $invoice = SaleInvoice::with(['customer', 'items.product'])->findOrFail($id);
@@ -82,7 +161,11 @@ public function generatePdf($id)
 
     $pdf->Output('D', "Invoice_{$invoice->invoice_number}.pdf");
 }
-
+public function show($id)
+{
+    $invoice = SaleInvoice::with('customer', 'items.product')->findOrFail($id);
+    return view('sale_invoices.show', compact('invoice'));
+}
 public function customer()
 {
     return $this->belongsTo(Customer::class, 'customer_id');
@@ -212,97 +295,6 @@ public function storePayment(Request $request, $id)
     }
 
     return redirect()->route('sale_invoices.index')->with('success', 'Payment added successfully!');
-}
-
-
-public function create()
-{
-    $customers = Customer::all();
-    $products = Products::all();
-    return view('sale_invoices.create', compact('customers', 'products'));
-}
-
-
-public function show($id)
-{
-    $invoice = SaleInvoice::with('customer', 'items.product')->findOrFail($id);
-    return view('sale_invoices.show', compact('invoice'));
-}
-
-
-public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'customer_id' => 'required|exists:customers,id',
-        'payment_status' => 'required|string',
-        'invoice_date' => 'required|date',
-        'due_date' => 'required|date',
-        'round_off' => 'nullable|numeric',
-        'global_discount' => 'nullable|numeric',
-        'final_amount' => 'required|numeric|min:0',
-        'products' => 'required|array|min:1',
-        'products.*.product_id' => 'required|exists:products,id',
-        'products.*.quantity' => 'required|numeric|min:1',
-        'products.*.unit_price' => 'required|numeric|min:0.01',
-        'products.*.gst_rate' => 'required|numeric|min:0',
-        'products.*.discount' => 'nullable|numeric|min:0',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $invoice = SaleInvoice::create([
-            'customer_id' => $validatedData['customer_id'],
-            'invoice_date' => $validatedData['invoice_date'],
-            'payment_status' => $validatedData['payment_status'],
-            'due_date' => $validatedData['due_date'],
-            'round_off' => $validatedData['round_off'] ?? 0,
-            'global_discount' => $validatedData['global_discount'] ?? 0,
-            'total_amount' => 0,
-        ]);
-
-        $totalAmount = 0;
-
-        foreach ($validatedData['products'] as $product) {
-            $subtotal = $product['quantity'] * $product['unit_price'];
-            $discountAmount = ($subtotal * ($product['discount'] ?? 0)) / 100;
-            $subtotalAfterDiscount = $subtotal - $discountAmount;
-            $gstAmount = ($subtotalAfterDiscount * $product['gst_rate']) / 100;
-            $totalPrice = $subtotalAfterDiscount + $gstAmount;
-
-            $totalAmount += $totalPrice;
-
-            SaleInvoiceItem::create([
-                'sale_invoice_id' => $invoice->id,
-                'product_id' => $product['product_id'],
-                'quantity' => $product['quantity'],
-                'unit_price' => $product['unit_price'],
-                'gst_rate' => $product['gst_rate'],
-                'discount' => $product['discount'] ?? 0,
-                'total_price' => $totalPrice,
-            ]);
-        }
-
-        $discountAmount = ($totalAmount * ($validatedData['global_discount'] ?? 0)) / 100;
-        $finalAmount = $totalAmount - $discountAmount;
-
-        $roundedAmount = round($finalAmount, 0);
-        $roundOff = number_format($roundedAmount - $finalAmount, 2, '.', '');
-
-        $invoice->update([
-            'total_amount' => $roundedAmount,
-            'round_off' => $roundOff,
-        ]);
-
-        DB::commit();
-
-        return redirect()->route('sale_invoices.index')->with('success', 'Invoice created successfully.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-
-        return redirect()->back()->with('error', 'Error creating invoice: ' . $e->getMessage());
-    }
 }
     public function destroy(SaleInvoice $saleInvoice)
     {

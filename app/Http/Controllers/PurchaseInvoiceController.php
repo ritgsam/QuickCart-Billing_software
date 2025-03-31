@@ -44,13 +44,98 @@ public function index(Request $request)
         'suppliers' => Supplier::all()
     ]);
 }
-
+public function create()
+    {
+        $suppliers = Supplier::all();
+        $products = Products::all();
+        return view('purchase_invoices.create', compact('suppliers', 'products'));
+    }
 public function show($id)
 {
     $invoice = PurchaseInvoice::with('supplier', 'items.product')->findOrFail($id);
     return view('purchase_invoices.show', compact('invoice'));
 }
+public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'supplier_id'    => 'required|exists:suppliers,id',
+        'invoice_date'   => 'required|date',
+        'due_date'       => 'nullable|date',
+        'global_discount' => 'nullable|numeric',
+        'round_off'      => 'nullable|numeric',
+        'invoice_notes'  => 'nullable|string',
+        'products'       => 'required|array|min:1',
+        'products.*.product_id' => 'required|exists:products,id',
+        'products.*.quantity'   => 'required|numeric|min:1',
+        'products.*.unit_price' => 'required|numeric|min:0',
+        'products.*.gst_rate'   => 'nullable|numeric|min:0',
+        'products.*.discount'   => 'nullable|numeric|min:0',
+        'products.*.total_price' => 'required|numeric|min:0',
+    ]);
 
+    try {
+        DB::beginTransaction();
+
+        $invoiceNumber = 'INV-' . str_pad(PurchaseInvoice::count() + 1, 4, '0', STR_PAD_LEFT);
+
+        $invoice = PurchaseInvoice::create([
+            'supplier_id'    => $validatedData['supplier_id'],
+            'invoice_number' => $invoiceNumber,
+            'invoice_date'   => $validatedData['invoice_date'],
+            'due_date'       => $validatedData['due_date'] ?? null,
+            'discount_total' => $validatedData['global_discount'] ?? 0,
+            'round_off'      => $validatedData['round_off'] ?? 0,
+            'invoice_notes'  => $validatedData['invoice_notes'] ?? null,
+            'final_amount'   => 0,
+            'total_amount'   => 0,
+            'payment_status' => 'Unpaid',
+        ]);
+
+        $totalAmount = 0;
+        $gstTotal = 0;
+        $discountTotal = 0;
+
+        foreach ($validatedData['products'] as $product) {
+            $subtotal = ($product['unit_price'] * $product['quantity']);
+            $discount = ($subtotal * ($product['discount'] / 100));
+            $tax = (($subtotal - $discount) * ($product['gst_rate'] / 100));
+            $total = $subtotal - $discount + $tax;
+
+            PurchaseInvoiceItem::create([
+                'purchase_invoice_id' => $invoice->id,
+                'product_id'   => $product['product_id'],
+                'quantity'     => $product['quantity'],
+                'unit_price'   => $product['unit_price'],
+                'gst_rate'     => $product['gst_rate'],
+                'discount'     => $product['discount'],
+                'total_price'  => $total,
+            ]);
+
+            $totalAmount += $total;
+            $gstTotal += $tax;
+            $discountTotal += $discount;
+        }
+$finalAmount = round($totalAmount, 2);
+$roundOff = round($finalAmount) - $finalAmount;
+
+$invoice->update([
+    'total_amount'   => $totalAmount,
+    'gst_total'      => $gstTotal,
+    'discount_total' => $discountTotal,
+    'round_off'      => $roundOff,
+    'final_amount'   => $finalAmount + $roundOff,
+]);
+
+
+        DB::commit();
+        return redirect()->route('purchase_invoices.index')->with('success', 'Purchase Invoice created successfully.');
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error($e->getMessage());
+        return back()->withErrors(['error' => 'Error saving invoice: ' . $e->getMessage()]);
+    }
+}
 public function edit($id)
 {
     $invoice = PurchaseInvoice::with('items.product')->findOrFail($id);
@@ -59,12 +144,7 @@ public function edit($id)
     return view('purchase_invoices.edit', compact('invoice', 'suppliers', 'products'));
 }
 
-    public function create()
-    {
-        $suppliers = Supplier::all();
-        $products = Products::all();
-        return view('purchase_invoices.create', compact('suppliers', 'products'));
-    }
+
 
 public function update(Request $request, $id)
 {
@@ -163,87 +243,6 @@ public function destroy($id)
     return redirect()->route('purchase_invoices.index')->with('success', 'Purchase Invoice deleted successfully!');
 }
 
-public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'supplier_id'    => 'required|exists:suppliers,id',
-        'invoice_date'   => 'required|date',
-        'due_date'       => 'nullable|date',
-        'global_discount' => 'nullable|numeric',
-        'round_off'      => 'nullable|numeric',
-        'invoice_notes'  => 'nullable|string',
-        'products'       => 'required|array|min:1', 
-        'products.*.product_id' => 'required|exists:products,id',
-        'products.*.quantity'   => 'required|numeric|min:1',
-        'products.*.unit_price' => 'required|numeric|min:0',
-        'products.*.gst_rate'   => 'nullable|numeric|min:0',
-        'products.*.discount'   => 'nullable|numeric|min:0',
-        'products.*.total_price' => 'required|numeric|min:0',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $invoiceNumber = 'INV-' . str_pad(PurchaseInvoice::count() + 1, 4, '0', STR_PAD_LEFT);
-
-        $invoice = PurchaseInvoice::create([
-            'supplier_id'    => $validatedData['supplier_id'],
-            'invoice_number' => $invoiceNumber,
-            'invoice_date'   => $validatedData['invoice_date'],
-            'due_date'       => $validatedData['due_date'] ?? null,
-            'discount_total' => $validatedData['global_discount'] ?? 0,
-            'round_off'      => $validatedData['round_off'] ?? 0,
-            'invoice_notes'  => $validatedData['invoice_notes'] ?? null,
-            'final_amount'   => 0, 
-            'total_amount'   => 0, 
-            'payment_status' => 'Unpaid',
-        ]);
-
-        $totalAmount = 0;
-        $gstTotal = 0;
-        $discountTotal = 0;
-
-        foreach ($validatedData['products'] as $product) {
-            $subtotal = ($product['unit_price'] * $product['quantity']); 
-            $discount = ($subtotal * ($product['discount'] / 100));
-            $tax = (($subtotal - $discount) * ($product['gst_rate'] / 100));
-            $total = $subtotal - $discount + $tax;
-
-            PurchaseInvoiceItem::create([
-                'purchase_invoice_id' => $invoice->id,
-                'product_id'   => $product['product_id'],
-                'quantity'     => $product['quantity'],
-                'unit_price'   => $product['unit_price'],
-                'gst_rate'     => $product['gst_rate'],
-                'discount'     => $product['discount'],
-                'total_price'  => $total,
-            ]);
-
-            $totalAmount += $total;
-            $gstTotal += $tax;
-            $discountTotal += $discount;
-        }
-$finalAmount = round($totalAmount, 2);
-$roundOff = round($finalAmount) - $finalAmount; 
-
-$invoice->update([
-    'total_amount'   => $totalAmount,
-    'gst_total'      => $gstTotal,
-    'discount_total' => $discountTotal,
-    'round_off'      => $roundOff,
-    'final_amount'   => $finalAmount + $roundOff,
-]);
-       
-
-        DB::commit(); 
-        return redirect()->route('purchase_invoices.index')->with('success', 'Purchase Invoice created successfully.');
-
-    } catch (\Exception $e) {
-        DB::rollback();
-        Log::error($e->getMessage()); 
-        return back()->withErrors(['error' => 'Error saving invoice: ' . $e->getMessage()]);
-    }
-}
 public function generatePdf($id)
 {
     $invoice = PurchaseInvoice::with(['supplier', 'items.product'])->findOrFail($id);
