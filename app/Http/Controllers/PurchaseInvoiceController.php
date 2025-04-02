@@ -126,7 +126,6 @@ $invoice->update([
     'final_amount'   => $finalAmount + $roundOff,
 ]);
 
-
         DB::commit();
         return redirect()->route('purchase_invoices.index')->with('success', 'Purchase Invoice created successfully.');
 
@@ -143,8 +142,6 @@ public function edit($id)
     $products = Products::all();
     return view('purchase_invoices.edit', compact('invoice', 'suppliers', 'products'));
 }
-
-
 
 public function update(Request $request, $id)
 {

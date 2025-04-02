@@ -61,7 +61,7 @@ public function store(Request $request)
         'gst_rate' => $request->gst_rate ?? 0,
         'discount' => $request->discount ?? 0,
         'visibility' => $request->visibility,
-    'hsn_code' => $request->hsn_code,
+        'hsn_code' => $request->hsn_code,
     ]);
 
     return redirect()->route('products.index')->with('success', 'Product created successfully.');

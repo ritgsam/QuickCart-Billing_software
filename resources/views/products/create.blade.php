@@ -74,7 +74,7 @@
                         </select>
                     </div>
                 </div>
-<div class="mb-3">
+                <div class="mb-3">
                         <label for="hsn_code" class="form-label">HSN Code</label>
                         <input type="text" class="form-control" id="hsn_code" name="hsn_code" value="{{ old('hsn_code', $product->hsn_code ?? '') }}" style="width: 20%">
                     </div>

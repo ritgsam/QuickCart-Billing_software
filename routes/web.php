@@ -140,7 +140,7 @@ Route::delete('products/{product}', [ProductController::class, 'destroy'])
 
 Route::resource('purchase-payments', PurchasePaymentController::class);
 
-// Route::resource('sale-payments', SalePaymentController::class);
+Route::resource('sale-payments', SalePaymentController::class);
 Route::resource('roles', RoleController::class);
 Route::get('/sale-payments', [SalePaymentController::class, 'index'])->name('sale-payments.index');
 // Route::resource('purchase-invoices', PurchaseInvoiceController::class);
