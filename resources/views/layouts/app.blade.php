@@ -16,7 +16,7 @@
             <div class="container">
                 <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">QuickCart</a>
 
-                <div class="ms-auto d-flex align-items-center">
+                <div class="ms-auto d-flex align-items-center text-gray-900">
                     <a href="{{ route('dashboard') }}" class="bi bi-house-door me-2 ">Dashboard </a>
 
                     <li class="nav-item dropdown">
