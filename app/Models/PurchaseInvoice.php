@@ -33,6 +33,7 @@ protected static function boot()
         });
     }
 
+
 public function supplier()
 {
     return $this->belongsTo(Supplier::class);
@@ -47,10 +48,12 @@ public function payments()
 {
     return $this->hasMany(PurchasePayment::class, 'purchase_invoice_id');
 }
+
 public function getFinalAmountAttribute()
 {
     return ($this->items->sum('total_price') - $this->items->sum('discount_amount')) + $this->items->sum('gst_amount');
 }
+
 public function getBalanceDueAttribute()
 {
     $totalPaid = $this->payments()->sum('amount_paid');

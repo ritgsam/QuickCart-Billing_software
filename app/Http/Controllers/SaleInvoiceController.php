@@ -336,7 +336,6 @@ if ($invoice->transportation) {
     $pdf->Cell(0, 8, "Status: " . $invoice->transportation->status, 0, 1);
 }
 
-
     $pdf->Output('D', "Invoice_{$invoice->invoice_number}.pdf");
 }
 

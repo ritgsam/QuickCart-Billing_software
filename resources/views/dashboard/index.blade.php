@@ -33,6 +33,8 @@
                         <ul class="dropdown-menu shadow-sm" aria-labelledby="mastersDropdown">
                             <li><a class="dropdown-item" href="{{ url('/customers') }}">Customers</a></li>
                             <li><a class="dropdown-item" href="{{ url('/suppliers') }}">Suppliers</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/products') }}">Products</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/categories') }}">Categories</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -54,8 +56,8 @@
                             <li><a class="dropdown-item" href="{{ url('/debit_notes') }}">Debit Note</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="bi bi-list-stars nav-link fw-semibold"  href="{{ url('/categories') }}">Categories</a></li>
-                    <li class="nav-item"><a class="bi bi-box nav-link fw-semibold" href="{{ url('/products') }}">Products</a></li>
+                    {{-- <li class="nav-item"><a class="bi bi-list-stars nav-link fw-semibold"  href="{{ url('/categories') }}">Categories</a></li> --}}
+                    {{-- <li class="nav-item"><a class="bi bi-box nav-link fw-semibold" href="{{ url('/products') }}">Products</a></li> --}}
                     <li class="nav-item"><a class="bi bi-building-fill-gear nav-link fw-semibold" href="{{ url('/reports') }}">Reports</a></li>
                     {{-- <li class="nav-item"><a class="nav-link fw-semibold" href="http://127.0.0.1:8000/users">Users & Roles</a></li> --}}
                      <li class="nav-item"><a class="bi bi-gear-wide-connected nav-link fw-semibold" href="{{ url('/settings') }}">Settings</a></li>

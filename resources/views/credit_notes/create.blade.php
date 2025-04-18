@@ -1,6 +1,8 @@
+
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container mt-5">
     <div class="card shadow-lg">
         <div class="card-header text-white" style="background-color: rgb(61, 60, 60);">
@@ -12,7 +14,7 @@
 
                 <div class="mb-3">
                     <label for="sale_invoice_id" class="form-label">Select Invoice:</label>
-                    <select name="sale_invoice_id" class="form-select" required>
+                    <select name="sale_invoice_id" id="sale_invoice_id" class="form-select" required>
                         <option value="">-- Select Invoice --</option>
                         @foreach($saleInvoices as $invoice)
                             <option value="{{ $invoice->id }}">{{ $invoice->invoice_number }}</option>
@@ -45,4 +47,18 @@
         </div>
     </div>
 </div>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#sale_invoice_id').select2({
+            placeholder: "-- Select Invoice --",
+            allowClear: true
+        });
+    });
+</script>
+
 @endsection

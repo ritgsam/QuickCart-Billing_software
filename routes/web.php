@@ -27,9 +27,16 @@ use App\Http\Controllers\CountryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductPriceController;
 use App\Http\Controllers\TransportationController;
+use App\Http\Controllers\Api\InvoiceApiController;
+
 // use App\Http\Controllers\PurchaseTransportationController;
 
 // Route::resource('purchase_transportations', PurchaseTransportationController::class);
+
+Route::get('/get-supplier-invoice/{supplierId}', [DebitNoteController::class, 'getSupplierInvoice']);
+
+// Route::get('/invoices/search', [InvoiceApiController::class, 'search'])->name('api.invoices.search');
+// Route::get('/invoices/{id}', [InvoiceApiController::class, 'show']);
 
 Route::resource('/transportations', TransportationController::class);
 // Route::resource('/transportations', TransportationController::class,'transportations');

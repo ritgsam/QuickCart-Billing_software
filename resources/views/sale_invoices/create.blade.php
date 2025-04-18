@@ -205,11 +205,6 @@
 
 
 
-
-
-
-
-
     let rowIndex = 1;
 
     document.getElementById('add-row').addEventListener('click', () => {

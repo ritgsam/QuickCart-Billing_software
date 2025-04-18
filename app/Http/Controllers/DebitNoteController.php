@@ -53,6 +53,18 @@ public function edit($id)
     return view('debit_notes.edit', compact('debitNote', 'suppliers', 'purchaseInvoices'));
 }
 
+public function getSupplierInvoice($supplierId)
+{
+    $invoice = PurchaseInvoice::where('supplier_id', $supplierId)
+                ->latest()
+                ->first(['id', 'invoice_number']);
+
+    if ($invoice) {
+        return response()->json(['invoice' => $invoice]);
+    }
+
+    return response()->json(['invoice' => null]);
+}
     public function destroy(DebitNote $debitNote)
     {
         $debitNote->delete();
