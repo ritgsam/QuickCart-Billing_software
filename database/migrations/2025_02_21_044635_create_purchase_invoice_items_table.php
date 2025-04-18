@@ -13,9 +13,14 @@ return new class extends Migration {
         $table->unsignedBigInteger('product_id');
         $table->integer('quantity');
         $table->decimal('unit_price', 10, 2);
-        $table->decimal('gst_rate', 5, 2)->default(0);
+        // $table->decimal('gst_rate', 5, 2)->default(0);
         $table->decimal('discount', 5, 2)->default(0);
         $table->decimal('tax', 5, 2)->default(0);
+
+            $table->decimal('sgst', 5, 2)->nullable();
+            $table->decimal('cgst', 5, 2)->nullable();
+            $table->decimal('igst', 5, 2)->nullable();
+
             $table->decimal('tax', 5, 2)->default(0)->after('unit_price');
         $table->decimal('total_price', 10, 2);
         $table->timestamps();
@@ -25,12 +30,11 @@ return new class extends Migration {
     });
 }
 
-
     public function down()
 {
     Schema::table('purchase_invoice_items', function (Blueprint $table) {
         $table->dropColumn('discount');
-        $table->dropColumn('gst_rate');
+        // $table->dropColumn('gst_rate');
     });
 }
 };

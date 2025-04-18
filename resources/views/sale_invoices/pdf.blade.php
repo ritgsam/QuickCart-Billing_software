@@ -32,32 +32,51 @@
         </div>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>GST (%)</th>
-                <th>Discount (%)</th>
-                <th>Total Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($invoice->items as $item)
-            <tr>
-                <td>{{ $item->product->name }}</td>
-                <td>{{ $item->quantity }}</td>
-                <td>₹{{ number_format($item->unit_price, 2) }}</td>
-                <td>{{ $item->gst_rate }}%</td>
-                <td>{{ $item->discount }}%</td>
-                <td>₹{{ number_format($item->total_price, 2) }}</td>
-            </tr>
-            @endforeach
-        </tbody>
+<thead>
+    <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>SGST (%)</th>
+        <th>CGST (%)</th>
+        <th>IGST (%)</th>
+        <th>Discount (%)</th>
+        <th>Total Price</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach ($invoice->items as $item)
+    <tr>
+        <td>{{ $item->product->name }}</td>
+        <td>{{ $item->quantity }}</td>
+        <td>₹{{ number_format($item->unit_price, 2) }}</td>
+        <td>{{ $item->sgst }}%</td>
+        <td>{{ $item->cgst }}%</td>
+        <td>{{ $item->igst }}%</td>
+        <td>{{ $item->discount }}%</td>
+        <td>₹{{ number_format($item->total_price, 2) }}</td>
+    </tr>
+    @endforeach
+</tbody>
+
+@if($invoice->transportation)
+    <div class="grid-container mt-3">
+        <div class="details">
+            <h3>Transportation Details</h3>
+            <p><strong>Transporter:</strong> {{ $invoice->transportation->transporter_name }}</p>
+            <p><strong>Vehicle Number:</strong> {{ $invoice->transportation->vehicle_number }}</p>
+            <p><strong>Dispatch Date:</strong> {{ $invoice->transportation->dispatch_date }}</p>
+            <p><strong>Expected Delivery:</strong> {{ $invoice->transportation->expected_delivery_date }}</p>
+            <p><strong>Status:</strong> {{ $invoice->transportation->status }}</p>
+        </div>
+    </div>
+@endif
+
+<p class="highlight">Final Amount: ₹{{ number_format($invoice->final_amount, 2) }}</p>
+
     </table>
 
-    <p class="highlight">Total Amount: ₹{{ number_format($invoice->total_amount, 2) }}</p>
+    {{-- <p class="highlight">Total Amount: ₹{{ number_format($invoice->total_amount, 2) }}</p> --}}
 </div>
 
 </body>

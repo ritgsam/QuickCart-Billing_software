@@ -72,6 +72,7 @@
                     <a href="{{ route('users.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-green-600">+ Add New User</a>
                 </div>
 
+
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse border border-gray-300 shadow-lg rounded-lg">
                         <thead>
@@ -79,7 +80,6 @@
                                 <th class="p-3 border text-left">User Name</th>
                                 <th class="p-3 border text-left">Email</th>
                                 <th class="p-3 border text-left">Role</th>
-                                {{-- <th class="p-3 border text-left">Permissions</th> --}}
                                 <th class="p-3 border text-center">Actions</th>
                             </tr>
                         </thead>
@@ -106,10 +106,12 @@
                                     $userPermissions = is_string($user->permissions) ? json_decode($user->permissions, true) : $user->permissions ?? [];
                                 @endphp
                                 </td>
+
                                 <td class="p-3 border text-center">
                                     <a href="{{ route('settings.deleteUser', $user->id) }}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</a>
                                 </td>
                             </tr>
+
                             @endforeach
                         </tbody>
                     </table>
@@ -120,6 +122,7 @@
 </div>
 
 <script>
+
 function showSection(sectionId) {
     document.querySelectorAll('.settings-section').forEach(section => {
         section.classList.add('hidden');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller {
 public function index() {
@@ -58,6 +59,14 @@ public function store(Request $request)
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
+public function assignRole(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+    $role = Role::findByName($request->role);
+    $user->assignRole($role);
+
+    return back()->with('success', 'Role assigned successfully');
+}
     public function destroy(User $user) {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');

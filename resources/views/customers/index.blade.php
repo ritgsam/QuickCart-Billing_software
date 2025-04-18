@@ -16,6 +16,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Address</th>
+<th>Country</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -26,6 +27,7 @@
                         <td style="background-color: rgb(238, 231, 231)">{{ $customer->email }}</td>
                         <td style="background-color: rgb(238, 231, 231)">{{ $customer->phone }}</td>
                         <td style="background-color: rgb(238, 231, 231)">{{ $customer->address }}</td>
+<td style="background-color: rgb(238, 231, 231)">{{ $customer->country }}</td>
                         <td class="text-center" style="background-color: rgb(238, 231, 231)">
                             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm text-white" style="background-color: rgba(43, 42, 42, 0.694);">Edit</a>
 

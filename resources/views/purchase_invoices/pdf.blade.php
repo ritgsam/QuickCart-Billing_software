@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,44 +8,57 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             padding: 20px;
+            color: #000;
         }
+
         .invoice-box {
-            padding: 20px;
             border: 1px solid #ddd;
+            padding: 20px;
         }
+
         .header {
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
+
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            margin-bottom: 20px;
         }
+
         .details {
             font-size: 16px;
+            line-height: 1.6;
         }
+
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
+
         .table th, .table td {
+            border: 1px solid #000;
             padding: 8px;
-            text-align: left;
-            border: 1px solid black;
+            text-align: center;
         }
+
         .table th {
-            background-color: #eee;
+            background-color: #f2f2f2;
         }
-        .highlight {
-            background-color: #f9f9f9;
-            padding: 10px;
-            font-size: 18px;
-            font-weight: bold;
+
+        .summary {
+            margin-top: 20px;
             text-align: right;
+            font-size: 16px;
+        }
+
+        .summary p {
+            margin: 4px 0;
         }
     </style>
 </head>
@@ -59,7 +73,7 @@
             <p><strong>Invoice Date:</strong> {{ $invoice->invoice_date }}</p>
         </div>
         <div class="details">
-            <p><strong>Supplier:</strong> {{ $invoice->supplier->company_name }}</p>
+            <p><strong>Supplier:</strong> {{ $invoice->supplier->company_name ?? '-' }}</p>
         </div>
     </div>
 
@@ -69,26 +83,38 @@
                 <th>Product</th>
                 <th>Qty</th>
                 <th>Unit Price</th>
-                <th>GST (%)</th>
+                <th>SGST (%)</th>
+                <th>CGST (%)</th>
+                <th>IGST (%)</th>
                 <th>Discount (%)</th>
                 <th>Total Price</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($invoice->items as $item)
-            <tr>
-                <td>{{ $item->product->name }}</td>
-                <td>{{ $item->quantity }}</td>
-                <td>₹{{ number_format($item->unit_price, 2) }}</td>
-                <td>{{ $item->gst_rate }}%</td>
-                <td>{{ $item->discount }}%</td>
-                <td>₹{{ number_format($item->total_price, 2) }}</td>
-            </tr>
+                <tr>
+                    <td>{{ $item->product->name }}</td>
+                    <td>{{ $item->quantity }}</td>
+                    <td>₹{{ number_format($item->unit_price, 2) }}</td>
+                    <td>{{ $item->sgst ?? 0 }}%</td>
+                    <td>{{ $item->cgst ?? 0 }}%</td>
+                    <td>{{ $item->igst ?? 0 }}%</td>
+                    <td>{{ $item->discount ?? 0 }}%</td>
+                    <td>₹{{ number_format($item->total_price, 2) }}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
 
-    <p class="highlight">Total Amount: ₹{{ number_format($invoice->total_amount, 2) }}</p>
+    <div class="summary">
+        <p><strong>Subtotal:</strong> ₹{{ number_format($invoice->subtotal ?? 0, 2) }}</p>
+        <p><strong>Total SGST:</strong> ₹{{ number_format($invoice->total_sgst ?? 0, 2) }}</p>
+        <p><strong>Total CGST:</strong> ₹{{ number_format($invoice->total_cgst ?? 0, 2) }}</p>
+        <p><strong>Total IGST:</strong> ₹{{ number_format($invoice->total_igst ?? 0, 2) }}</p>
+        <p><strong>Total Discount:</strong> ₹{{ number_format($invoice->total_discount ?? 0, 2) }}</p>
+        <p><strong>Round Off:</strong> ₹{{ number_format($invoice->round_off ?? 0, 2) }}</p>
+        <p><strong>Final Amount:</strong> ₹{{ number_format($invoice->final_amount ?? $invoice->total_amount, 2) }}</p>
+    </div>
 </div>
 
 </body>

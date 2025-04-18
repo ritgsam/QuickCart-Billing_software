@@ -10,14 +10,17 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+$table->foreignId('country_id')->constrained();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone');
+    $table->string('country');
             $table->text('address')->nullable()->after('phone');
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('gst_number')->nullable();
+            $table->string('country');
             $table->timestamps();
         });
     }

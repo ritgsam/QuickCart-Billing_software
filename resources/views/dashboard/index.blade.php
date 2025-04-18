@@ -42,9 +42,9 @@
                             <li><a class="dropdown-item" href="{{ url('/sale_invoices/create') }}">Create Invoices</a></li>
                             <li><a class="dropdown-item" href="{{ url('/sale_payments') }}">Sale Payment Record</a></li>
                             <li><a class="dropdown-item" href="{{ url('/credit_notes') }}">Credit Note</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/transportations') }}">Transportations</a></li>
                         </ul>
                     </li>
-
                     <li class="nav-item dropdown">
                         <a class="bi bi-receipt nav-link dropdown-toggle fw-semibold" href="#" id="purchaseDropdown">Purchase</a>
                         <ul class="dropdown-menu shadow-sm" aria-labelledby="purchaseDropdown">
@@ -61,8 +61,12 @@
                      <li class="nav-item"><a class="bi bi-gear-wide-connected nav-link fw-semibold" href="{{ url('/settings') }}">Settings</a></li>
                 </ul>
             </div>
+<form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" class="bi bi-box-arrow-left nav-link text-danger fw-semibold">Logout</button>
+</form>
 
-                    <li class="nav-item"><a class="bi bi-box-arrow-left nav-link text-danger fw-semibold" href="{{ url('/login') }}">Logout</a></li>
+                    {{-- <li class="nav-item"><a class="bi bi-box-arrow-left nav-link text-danger fw-semibold" href="{{ url('/login') }}">Logout</a></li> --}}
                 </ul>
             </div>
         </div>

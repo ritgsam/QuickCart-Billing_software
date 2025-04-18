@@ -27,6 +27,7 @@ return new class extends Migration {
                 $table->decimal('gst_rate', 5, 2)->default(0);
                 $table->decimal('discount', 5, 2)->default(0);
                 $table->decimal('tax_rate', 5, 2)->default(0);
+$table->decimal('base_price', 10, 2);
                 $table->string('hsn_code')->nullable();
                 $table->boolean('visibility')->default(true);
                 $table->string('sku', 255)->nullable();

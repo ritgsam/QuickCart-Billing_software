@@ -16,8 +16,8 @@
             <div class="container">
                 <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">QuickCart</a>
 
-                <div class="ms-auto d-flex align-items-center text-gray-900">
-                    <a href="{{ route('dashboard') }}" class="bi bi-house-door me-2 ">Dashboard </a>
+                <div class="ms-auto d-flex align-items-center  text-gray-900 ">
+                    <a href="{{ route('dashboard') }}" class="bi bi-house-door me-2">Dashboard</a>
 
                     <li class="nav-item dropdown">
                         <a class="bi bi-person-lines-fill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -38,6 +38,7 @@
                             <li><a class="dropdown-item" href="{{ url('/sale_invoices/create') }}">Create Invoices</a></li>
                             <li><a class="dropdown-item" href="{{ url('/sale_payments') }}">Sale Payment Record</a></li>
                             <li><a class="dropdown-item" href="{{ url('/credit_notes') }}">Credit Note</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/transportations') }}">Transportations</a></li>
                         </ul>
                     </li>
 

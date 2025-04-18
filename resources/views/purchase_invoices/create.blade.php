@@ -1,200 +1,241 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6 shadow-md rounded-lg" style="background-color:#f5ebe0">
-    <h1 class="text-3xl font-bold mb-6 text-gray-700">Create Purchase Invoice</h1>
+<div class="container mx-auto p-6 shadow-md rounded-lg bg-gray-100">
+    <h1 class="text-2xl font-bold mb-6">Create Purchase Invoice</h1>
 
-    <form action="{{ route('purchase_invoices.store') }}" method="POST">
+    <form method="POST" action="{{ route('purchase_invoices.store') }}">
         @csrf
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="grid grid-cols-2 gap-4">
+<div class="mb-3">
+    <label for="supplier_id">Supplier</label>
+    <select name="supplier_id" id="supplier_id" class="form-control" required>
+        <option value="">-- Select Supplier --</option>
+        @foreach($suppliers as $supplier)
+            <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
+        @endforeach
+    </select>
+</div>
+
             <div>
-                <label class="block text-gray-700 font-semibold">Supplier</label>
-                <select name="supplier_id" class="w-full p-2 border rounded-lg" required>
-                    <option value="">Select Supplier</option>
-                    @foreach ($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
-                    @endforeach
-                </select>
+                <label>Invoice Date:</label>
+                <input type="date" name="invoice_date" class="w-full border rounded p-2" required>
             </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
             <div>
-                <label class="block text-gray-700 font-semibold">Invoice Date</label>
-                <input type="date" name="invoice_date" class="w-full p-2 border rounded-lg" required>
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Payment Status</label>
-                <select name="payment_status" class="w-full p-2 border rounded-lg" required>
+                <label>Payment Status:</label>
+                <select name="payment_status" class="w-full border rounded p-2" required>
                     <option value="Paid">Paid</option>
                     <option value="Unpaid">Unpaid</option>
                     <option value="Partial">Partial</option>
                 </select>
             </div>
             <div>
-                <label class="block text-gray-700 font-semibold">Due Date</label>
-                <input type="date" name="due_date" class="w-full p-2 border rounded-lg">
+                <label>Due Date:</label>
+                <input type="date" name="due_date" class="w-full border rounded p-2">
             </div>
         </div>
 
-        <h2 class="text-xl font-bold text-gray-700 mt-6 mb-4">Invoice Items</h2>
-        <div class="overflow-x-auto">
-            <table id="invoice-items" class="w-full border bg-white rounded-lg">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="px-4 py-2 border">Product</th>
-                        <th class="px-4 py-2 border">Quantity</th>
-                        <th class="px-4 py-2 border">Unit Price</th>
-                        <th class="px-4 py-2 border">GST (%)</th>
-                        <th class="px-4 py-2 border">Discount (%)</th>
-                        <th class="px-4 py-2 border">Total Price</th>
-                        <th class="px-4 py-2 border">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="product-row">
-                        <td class="px-4 py-2 border">
-                            <select name="products[0][product_id]" class="product-select w-full p-2 border rounded-lg" required onchange="fetchProductDetails(this)">
-                                <option value="">Select Product</option>
-                                @foreach ($products as $product)
-                                    <option value="{{ $product->id }}" data-price="{{ $product->purchase_price }}" data-gst="{{ $product->gst_rate }}" data-discount="{{ $product->discount }}">
-                                        {{ $product->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td class="px-4 py-2 border"><input type="number" name="products[0][quantity]" class="quantity w-full p-2 border rounded-lg" value="1" required oninput="updateTotal()"></td>
-                        <td class="px-4 py-2 border"><input type="number" name="products[0][unit_price]" class="unit-price w-full p-2 border rounded-lg" value="0" readonly></td>
-                        <td class="px-4 py-2 border">
-                            <select name="products[0][gst_rate]" class="gst-rate w-full p-2 border rounded-lg" required onchange="updateTotal()">
-                                <option value="5">5%</option>
-                                <option value="12">12%</option>
-                                <option value="18">18%</option>
-                                <option value="28">28%</option>
-                            </select>
-                        </td>
-                        <td class="px-4 py-2 border"><input type="number" name="products[0][discount]" class="discount w-full p-2 border rounded-lg" value="0" oninput="updateTotal()"></td>
-                        <td class="px-4 py-2 border"><input type="number" name="products[0][total_price]" class="total-price w-full p-2 border rounded-lg" value="0" readonly></td>
-                        <td class="px-4 py-2 border text-center">
-                            <button type="button" class="remove-product text-red-500 font-bold" onclick="removeProduct(this)">✖</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <h2 class="text-xl font-semibold mt-6">Products</h2>
+
+        <table class="w-full border mt-4" id="product-table">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>SGST %</th>
+                    <th>CGST %</th>
+                    <th>IGST %</th>
+                    <th>Discount %</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="product-body">
+                <tr class="product-row">
+                    <td>
+                        <select name="products[0][product_id]" class="product-select border rounded p-1 w-full" onchange="fillUnitPrice(this)">
+                            <option value="">Select</option>
+                            @foreach ($products as $product)
+                                <option value="{{ $product->id }}" data-price="{{ $product->purchase_price }}">{{ $product->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="number" name="products[0][quantity]" class="qty border rounded p-1 w-full" value="1"></td>
+                    <td><input type="number" name="products[0][unit_price]" class="unit-price border rounded p-1 w-full" readonly></td>
+                    <td>
+                        <select name="products[0][sgst]" class="sgst border rounded p-1 w-full">
+                            @foreach ([0,9] as $tax)
+                                <option value="{{ $tax }}">{{ $tax }}%</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="products[0][cgst]" class="cgst border rounded p-1 w-full">
+                            @foreach ([0, 9] as $tax)
+                                <option value="{{ $tax }}">{{ $tax }}%</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="products[0][igst]" class="igst border rounded p-1 w-full">
+                            @foreach ([0, 5, 12, 18, 28] as $tax)
+                                <option value="{{ $tax }}">{{ $tax }}%</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="number" name="products[0][discount]" class="discount border rounded p-1 w-full" value="0"></td>
+                    <td><input type="number" name="products[0][total_price]" class="total border rounded p-1 w-full" readonly></td>
+                    <td><button type="button" class="remove-row text-red-500">✖</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" id="add-row" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">+ Add Product</button>
+<br>
+<br><h4><b>Transportation Details</b></h4><br>
+<div class="row">
+    <div class="col-md-4">
+        <label for="transporter_name">Transporter Name</label>
+        <input type="text" name="transporter_name" class="form-control" value="{{ old('transporter_name', $invoice->transportation->transporter_name ?? '') }}">
+    </div>
+    <div class="col-md-4">
+        <label for="vehicle_number">Vehicle Number</label>
+        <input type="text" name="vehicle_number" class="form-control" value="{{ old('vehicle_number', $invoice->transportation->vehicle_number ?? '') }}">
+    </div>
+    <div class="col-md-4">
+        <label for="dispatch_date">Dispatch Date</label>
+        <input type="date" name="dispatch_date" class="form-control" value="{{ old('dispatch_date', optional($invoice->transportation->dispatch_date ?? null)->format('Y-m-d')) }}">
+    </div>
+    <div class="col-md-4 mt-2">
+        <label for="expected_delivery_date">Expected Delivery Date</label>
+        <input type="date" name="expected_delivery_date" class="form-control" value="{{ old('expected_delivery_date', optional($invoice->transportation->expected_delivery_date ?? null)->format('Y-m-d')) }}">
+    </div>
+    <div class="col-md-4 mt-2">
+        <label for="status">Status</label>
+        <select name="status" class="form-control">
+            <option value="Pending" {{ old('status', $invoice->transportation->status ?? '') == 'Pending' ? 'selected' : '' }}>Pending</option>
+            <option value="Shipped" {{ old('status', $invoice->transportation->status ?? '') == 'Shipped' ? 'selected' : '' }}>Shipped</option>
+            <option value="Delivered" {{ old('status', $invoice->transportation->status ?? '') == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+        </select>
+    </div>
+</div>
+
+
+        <div class="grid grid-cols-2 gap-4 mt-6">
+            {{-- <div>
+                <label>Global Discount (%):</label>
+                <input type="number" name="global_discount" id="global-discount" class="w-full border rounded p-2" value="0">
+            </div> --}}
+            <div>
+                <label>Invoice Notes:</label>
+                <textarea name="invoice_notes" class="w-full border rounded p-2"></textarea>
+            </div>
         </div>
 
-        <button type="button" id="add-product" class="mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg">Add Another Product</button>
+        <div class="grid grid-cols-3 gap-4 mt-4">
+            <div>
+                <label>Subtotal:</label>
+                <input type="number" id="subtotal" class="w-full border rounded p-2" readonly>
+            </div>
+            <div>
+                <label>Global Discount (%):</label>
+                <input type="number" name="global_discount" id="global-discount" class="w-full border rounded p-2" value="0">
+            </div>
+            <div>
+                <label>Round Off:</label>
+                <input type="number" name="round_off" id="round-off" class="w-full border rounded p-2" readonly>
+            </div>
+            <div>
+                <label>Final Amount:</label>
+                <input type="hidden" name="final_amount" id="final-amount-hidden">
+                <input type="number" id="final-amount" class="w-full border rounded p-2" readonly>
+            </div>
+        </div>
 
         <div class="mt-6">
-            <label class="block text-gray-700 font-semibold">Invoice Notes</label>
-            <textarea name="invoice_notes" class="w-full p-2 border rounded-lg" placeholder="Enter notes (optional)"></textarea>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            <div>
-                <label class="block text-gray-700 font-semibold">SubTotal</label>
-                <input type="number" id="total-amount" class="w-full p-2 border rounded-lg" readonly>
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Global Discount (%)</label>
-                <input type="number" name="global_discount" class="w-full p-2 border rounded-lg" step="0.01" value="0">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Round Off</label>
-                <input type="number" name="round_off" class="w-full p-2 border rounded-lg" step="0.01" value="0">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Final Amount</label>
-                <input type="number" id="final-amount" class="w-full p-2 border rounded-lg" readonly>
-            </div>
-        </div>
-
-        <div class="mt-6 flex space-x-4">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg">Save Invoice</button>
-            <a href="{{ route('purchase_invoices.index') }}" class="bg-red-500 text-white px-6 py-2 rounded-lg">Cancel</a>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Submit Invoice</button>
+            <a href="{{ route('purchase-invoices.index') }}" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</a>
         </div>
     </form>
 </div>
+
 <script>
-document.getElementById('add-product').addEventListener('click', function() {
-    let index = document.querySelectorAll('.product-row').length;
-    let newRow = document.querySelector('.product-row').cloneNode(true);
-    newRow.innerHTML = newRow.innerHTML.replace(/\[0\]/g, `[${index}]`);
-    document.getElementById('invoice-items').querySelector('tbody').appendChild(newRow);
+let rowIndex = 1;
 
-    newRow.querySelector('.remove-product').addEventListener('click', function() {
-        newRow.remove();
-        updateTotal();
+document.getElementById('add-row').addEventListener('click', () => {
+    const tbody = document.getElementById('product-body');
+    const row = document.querySelector('.product-row').cloneNode(true);
+    row.querySelectorAll('input, select').forEach(el => {
+        const name = el.getAttribute('name');
+        if (name) {
+            el.setAttribute('name', name.replace(/\[\d+\]/, `[${rowIndex}]`));
+        }
+        if (!el.classList.contains('unit-price') && !el.classList.contains('total')) {
+            el.value = el.classList.contains('discount') ? '0' : '1';
+        }
     });
-
-    attachChangeEvents(newRow);
+    tbody.appendChild(row);
+    rowIndex++;
 });
 
-function attachChangeEvents(row) {
-    row.querySelector('.product-select').addEventListener('change', function() {
-        fetchProductDetails(this);
-    });
-
-    row.querySelector('.quantity').addEventListener('input', function() {
-        updateTotal();
-    });
-
-    row.querySelector('.gst-rate').addEventListener('change', function() {
-        updateTotal();
-    });
-
-    row.querySelector('.discount').addEventListener('input', function() {
-        updateTotal();
-    });
-}
-function fetchProductDetails(selectElement) {
-    let selectedOption = selectElement.options[selectElement.selectedIndex];
-    let row = selectElement.closest('.product-row');
-
-    row.querySelector('.unit-price').value = selectedOption.getAttribute('data-price');
-    row.querySelector('.gst-rate').value = selectedOption.getAttribute('data-gst');
-    row.querySelector('.discount').value = selectedOption.getAttribute('data-discount');
-
-    updateTotal();
-}
-function updateTotal() {
-    let totalAmount = 0;
-
-    document.querySelectorAll('.product-row').forEach(row => {
-        let qty = parseFloat(row.querySelector('.quantity').value) || 0;
-        let price = parseFloat(row.querySelector('.unit-price').value) || 0;
-        let gstRate = parseFloat(row.querySelector('.gst-rate').value) || 0;
-        let discount = parseFloat(row.querySelector('.discount').value) || 0;
-
-        let subtotal = qty * price;
-        let discountAmount = (subtotal * discount) / 100;
-        let discountedSubtotal = subtotal - discountAmount;
-
-        let gstAmount = (discountedSubtotal * gstRate) / 100;
-        let totalPrice = discountedSubtotal + gstAmount;
-
-        row.querySelector('.total-price').value = totalPrice.toFixed(2);
-        totalAmount += totalPrice;
-    });
-
-    applyGlobalDiscount(totalAmount);
-}
-function applyGlobalDiscount(totalAmount) {
-    let globalDiscount = parseFloat(document.querySelector('input[name="global_discount"]').value) || 0;
-    let discountAmount = (totalAmount * globalDiscount) / 100;
-    let finalAmount = totalAmount - discountAmount;
-
-    let roundOff = Math.round(finalAmount) - finalAmount;
-    finalAmount = Math.round(finalAmount);
-
-    document.getElementById('total-amount').value = totalAmount.toFixed(2);
-    document.getElementById('final-amount').value = finalAmount.toFixed(2);
-    document.querySelector('input[name="round_off"]').value = roundOff.toFixed(2);
-}
-
-document.addEventListener("input", function (event) {
-    if (event.target.matches(".product-select, .quantity, .gst-rate, .discount, input[name='global_discount']")) {
-        updateTotal();
+document.addEventListener('change', e => {
+    if (e.target.classList.contains('product-select')) {
+        fillUnitPrice(e.target);
+    }
+    calculateTotals();
+});
+document.addEventListener('input', () => calculateTotals());
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('remove-row')) {
+        const row = e.target.closest('tr');
+        if (document.querySelectorAll('.product-row').length > 1) {
+            row.remove();
+            calculateTotals();
+        }
     }
 });
-</script>
 
+function fillUnitPrice(select) {
+    const price = select.selectedOptions[0].dataset.price || 0;
+    const row = select.closest('tr');
+    row.querySelector('.unit-price').value = price;
+}
+
+function calculateTotals() {
+    let subtotal = 0;
+    document.querySelectorAll('.product-row').forEach(row => {
+        const qty = parseFloat(row.querySelector('.qty').value) || 0;
+        const price = parseFloat(row.querySelector('.unit-price').value) || 0;
+        const sgst = parseFloat(row.querySelector('.sgst').value) || 0;
+        const cgst = parseFloat(row.querySelector('.cgst').value) || 0;
+        const igst = parseFloat(row.querySelector('.igst').value) || 0;
+        const discount = parseFloat(row.querySelector('.discount').value) || 0;
+
+        const base = qty * price;
+        const taxAmount = base * (sgst + cgst + igst) / 100;
+        const discountAmount = base * discount / 100;
+        const total = base + taxAmount - discountAmount;
+
+        row.querySelector('.total').value = total.toFixed(2);
+        subtotal += total;
+    });
+
+    const globalDiscount = parseFloat(document.getElementById('global-discount').value) || 0;
+    const discounted = subtotal - (subtotal * globalDiscount / 100);
+    const rounded = Math.round(discounted);
+    const roundOff = parseFloat((rounded - discounted).toFixed(2));
+
+    document.getElementById('subtotal').value = subtotal.toFixed(2);
+    document.getElementById('round-off').value = roundOff;
+    document.getElementById('final-amount').value = rounded;
+    document.getElementById('final-amount-hidden').value = rounded;
+}
+
+
+</script>
 @endsection

@@ -15,9 +15,12 @@ return new class extends Migration {
             $table->decimal('tax', 8, 2)->nullable();
             $table->decimal('discount_total', 10, 2)->nullable();
             $table->decimal('gst_total', 10, 2)->nullable();
+            $table->decimal('sgst', 15, 2)->default(0);
+            $table->decimal('cgst', 15, 2)->default(0);
+            $table->decimal('igst', 15, 2)->default(0);
             $table->decimal('round_off', 10, 2)->default(0);
             $table->decimal('final_amount', 10, 2)->after('discount')->nullable();
-            $table->string('payment_status')->default('Unpaid');
+            $table->string('payment_status')->default('paid');
             $table->date('due_date')->nullable();
             $table->text('invoice_notes')->nullable();
             $table->timestamps();

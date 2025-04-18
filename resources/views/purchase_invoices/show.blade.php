@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -17,9 +18,12 @@
                 </span>
             </p>
             <p><span class="font-semibold text-gray-700">Invoice Notes:</span> {{ $invoice->invoice_notes ?? 'N/A' }}</p>
-            <p><span class="font-semibold text-gray-700">Total Amount:</span> ₹{{ number_format($invoice->total_amount, 2) }}</p>
-            <p><span class="font-semibold text-gray-700">Round Off:</span> ₹{{ number_format($invoice->round_off, 2) }}</p>
-            <p class="col-span-2"><span class="font-semibold text-gray-700">Final Amount:</span> <span class="text-lg font-bold text-blue-700">₹{{ number_format($invoice->final_amount, 2) }}</span></p>
+            <p><span class="font-semibold text-gray-700">Subtotal (Before Round Off):</span> ₹{{ number_format($invoice->total_amount, 2) }}</p>
+            <p><span class="font-semibold text-gray-700">Round Off:</span> ₹{{ number_format($invoice->round_off ?? 0, 2) }}</p>
+
+            <p class="col-span-2"><span class="font-semibold text-gray-700">Final Amount:</span>
+                <span class="text-lg font-bold text-blue-700">₹{{ number_format($invoice->final_amount, 2) }}</span>
+            </p>
         </div>
 
         <h2 class="text-2xl font-bold mt-6 text-gray-800">Invoice Items</h2>
@@ -30,7 +34,9 @@
                         <th class="px-4 py-3 border">Product</th>
                         <th class="px-4 py-3 border">Quantity</th>
                         <th class="px-4 py-3 border">Unit Price</th>
-                        <th class="px-4 py-3 border">Tax (%)</th>
+                        <th class="px-4 py-3 border">SGST (%)</th>
+                        <th class="px-4 py-3 border">CGST (%)</th>
+                        <th class="px-4 py-3 border">IGST (%)</th>
                         <th class="px-4 py-3 border">Total Price</th>
                     </tr>
                 </thead>
@@ -40,9 +46,9 @@
                         <td class="px-4 py-2 border">{{ $item->product->name ?? 'N/A' }}</td>
                         <td class="px-4 py-2 border">{{ $item->quantity }}</td>
                         <td class="px-4 py-2 border">₹{{ number_format($item->unit_price, 2) }}</td>
-<td class="px-4 py-2 border">
-    {{ isset($item->tax) ? number_format($item->gst_rate, 2) : 'N/A' }}%
-</td>
+                        <td class="px-4 py-2 border">{{ number_format($item->sgst, 2) }}%</td>
+                        <td class="px-4 py-2 border">{{ number_format($item->cgst, 2) }}%</td>
+                        <td class="px-4 py-2 border">{{ number_format($item->igst, 2) }}%</td>
                         <td class="px-4 py-2 border">₹{{ number_format($item->total_price, 2) }}</td>
                     </tr>
                     @endforeach

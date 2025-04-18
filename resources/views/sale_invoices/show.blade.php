@@ -18,30 +18,53 @@
                 </div>
             </div>
 
+@if($invoice->transportation)
+    <h4 class="mt-4">Transportation Details</h4>
+    <ul>
+        <li><strong>Transporter:</strong> {{ $invoice->transportation->transporter_name }}</li>
+        <li><strong>Vehicle:</strong> {{ $invoice->transportation->vehicle_number }}</li>
+        <li><strong>Dispatch Date:</strong> {{ $invoice->transportation->dispatch_date }}</li>
+        <li><strong>Expected Delivery:</strong> {{ $invoice->transportation->expected_delivery_date }}</li>
+        <li><strong>Status:</strong> {{ $invoice->transportation->status }}</li>
+    </ul>
+@endif
+
             <h5 class="mt-4">Invoice Items</h5>
             <div class="table-responsive">
                 <table class="table table-bordered mt-2 bg-white">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Tax (%)</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($invoice->items as $item)
-                        <tr>
-                            <td>{{ $item->product->name }}</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>₹{{ number_format($item->unit_price, 2) }}</td>
-                            <td>{{ $item->gst_rate }}%</td>
-                            <td>₹{{ number_format($item->total_price, 2) }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                
+<thead class="table-dark">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>SGST (%)</th>
+        <th>CGST (%)</th>
+        <th>IGST (%)</th>
+        <th>Total</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach ($invoice->items as $item)
+    <tr>
+        <td>{{ $item->product->name }}</td>
+        <td>{{ $item->quantity }}</td>
+        <td>₹{{ number_format($item->unit_price, 2) }}</td>
+        <td>{{ $item->sgst }}%</td>
+        <td>{{ $item->cgst }}%</td>
+        <td>{{ $item->igst }}%</td>
+        <td>₹{{ number_format($item->total_price, 2) }}</td>
+    </tr>
+    @endforeach
+</tbody>
+
                 </table>
+<div class="mt-3">
+    <p><strong>Subtotal (Before Round Off):</strong> ₹{{ number_format($invoice->total_amount, 2) }}</p>
+    <p><strong>Round Off:</strong> ₹{{ number_format($invoice->round_off, 2) }}</p>
+    <p><strong>Final Amount (After Round Off):</strong> ₹{{ number_format($invoice->final_amount, 2) }}</p>
+</div>
+
             </div>
 
             <div class="d-flex justify-content-end mt-4">

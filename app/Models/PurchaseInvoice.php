@@ -9,7 +9,19 @@ class PurchaseInvoice extends Model
 {
     use HasFactory;
 
-protected $fillable = ['supplier_id', 'invoice_date', 'total_amount', 'tax', 'round_off','discount', 'payment_status', 'due_date', 'invoice_notes','final_amount','invoice_number','global_discount'];
+protected $fillable = [
+    'supplier_id', 'invoice_date', 'due_date', 'invoice_number',
+    'total_amount', 'discount_total', 'global_discount',
+    'round_off', 'final_amount', 'payment_status', 'invoice_notes',
+    'sgst_total',
+    'cgst_total',
+    'igst_total',
+];
+
+public function transportation()
+{
+    return $this->hasOne(PurchaseTransportation::class);
+}
 
 protected static function boot()
     {
@@ -21,20 +33,14 @@ protected static function boot()
         });
     }
 
-  public function supplier()
-    {
-        return $this->belongsTo(Supplier::class, 'supplier_id');
-    }
-
-    public function purchaseInvoice()
+public function supplier()
 {
-    return $this->belongsTo(PurchaseInvoice::class, 'purchase_invoice_id');
+    return $this->belongsTo(Supplier::class);
 }
-
 
 public function items()
 {
-    return $this->hasMany(PurchaseInvoiceItem::class, 'purchase_invoice_id');
+    return $this->hasMany(PurchaseInvoiceItem::class);
 }
 
 public function payments()

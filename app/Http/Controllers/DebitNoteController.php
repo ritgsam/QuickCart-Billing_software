@@ -21,16 +21,6 @@ class DebitNoteController extends Controller
         $purchaseInvoices = PurchaseInvoice::all();
         return view('debit_notes.create', compact('suppliers', 'purchaseInvoices'));
     }
-
-public function edit($id)
-{
-    $debitNote = DebitNote::findOrFail($id);
-    $suppliers = Supplier::all();
-    $purchaseInvoices = PurchaseInvoice::all();
-
-    return view('debit_notes.edit', compact('debitNote', 'suppliers', 'purchaseInvoices'));
-}
-
     public function store(Request $request)
 {
     $request->validate([
@@ -54,7 +44,14 @@ public function edit($id)
 
     return redirect()->route('debit_notes.index')->with('success', 'Debit Note Created!');
 }
+public function edit($id)
+{
+    $debitNote = DebitNote::findOrFail($id);
+    $suppliers = Supplier::all();
+    $purchaseInvoices = PurchaseInvoice::all();
 
+    return view('debit_notes.edit', compact('debitNote', 'suppliers', 'purchaseInvoices'));
+}
 
     public function destroy(DebitNote $debitNote)
     {

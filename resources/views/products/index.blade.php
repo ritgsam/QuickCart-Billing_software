@@ -43,6 +43,7 @@
                             <th>Stock</th>
                             <th>GST Rate (%)</th>
                             <th>Discount (%)</th>
+<th>Country-wise Price</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -53,10 +54,18 @@
                             <td>{{ $product->sku }}</td>
                             <td>{{ $product->hsn_code ?? 'N/A' }}</td>
                             <td>{{ $product->category->name ?? 'N/A' }}</td>
+{{-- <td>{{ $product->category->name ?? 'N/A' }}</td> --}}
                             <td>₹{{ number_format($product->selling_price, 2) }}</td>
                             <td>{{ $product->stock }}</td>
                             <td>{{ $product->gst_rate }}%</td>
                             <td>{{ $product->discount }}%</td>
+
+<td>
+@foreach($product->prices as $price)
+    {{ optional($price->country)->name ?? 'N/A' }}: {{ $price->price }} <br>
+@endforeach
+
+        </td>
                             <td class="text-center">
                                 <a href="{{ route('products.edit', $product->id) }}" class="btn text-white btn-sm" style="background-color: rgba(43, 42, 42, 0.694);">Edit</a>
                                 <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"

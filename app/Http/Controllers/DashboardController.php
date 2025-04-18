@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\SaleInvoice;
 use App\Models\PurchaseInvoice;
-use App\Models\Products;
+use App\Models\Product;
 use App\Models\SalePayment;
 use App\Models\PurchasePayment;
 use Carbon\Carbon;
@@ -45,7 +45,7 @@ class DashboardController extends Controller
     $pending_customer_payments = SalePayment::where('status', 'Pending')->sum('balance_due');
     $pending_supplier_payments = PurchasePayment::where('status', 'Pending')->sum('balance_due');
 
-    $low_stock_products = Products::where('stock', '<', 5)->get();
+    $low_stock_products = Product::where('stock', '<', 5)->get();
 
     return view('dashboard.index', compact(
 'sales_days', 'sales_amounts',

@@ -23,6 +23,60 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Models\SaleInvoice;
 use App\Models\PurchaseInvoice;
+use App\Http\Controllers\CountryController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProductPriceController;
+use App\Http\Controllers\TransportationController;
+// use App\Http\Controllers\PurchaseTransportationController;
+
+// Route::resource('purchase_transportations', PurchaseTransportationController::class);
+
+Route::resource('/transportations', TransportationController::class);
+// Route::resource('/transportations', TransportationController::class,'transportations');
+
+Route::get('/customer-country-prices/{id}', [ProductPriceController::class, 'getPricesByCustomer']);
+
+Route::get('/customer-country-prices/{customer}', [ProductPriceController::class, 'getPricesByCustomer']);
+
+Route::delete('/settings/delete-user/{user}', [SettingsController::class, 'deleteUser'])->name('settings.deleteUser');
+
+Route::post('/settings/update-company', [SettingsController::class, 'updateCompany'])->name('settings.updateCompany');
+
+Route::post('/settings/update-profile', [SettingsController::class, 'updateProfile'])->name('settings.updateProfile');
+
+Route::group(['middleware' => ['role:Admin|Manager']], function () {
+    Route::get('/purchase_invoices', [PurchaseInvoiceController::class, 'index'])->name('purchase_invoices.index')->middleware('permission:view invoice');
+    Route::get('/purchase_invoices/create', [PurchaseInvoiceController::class, 'create'])->name('purchase_invoices.create')->middleware('permission:create invoice');
+    Route::post('/purchase_invoices', [PurchaseInvoiceController::class, 'store'])->name('purchase_invoices.store')->middleware('permission:create invoice');
+    Route::get('/purchase_invoices/{id}/edit', [PurchaseInvoiceController::class, 'edit'])->name('purchase_invoices.edit')->middleware('permission:edit invoice');
+    Route::delete('/purchase_invoices/{id}', [PurchaseInvoiceController::class, 'destroy'])->name('purchase_invoices.destroy')->middleware('permission:delete invoice');
+});
+
+Route::resource('purchase-invoices', PurchaseInvoiceController::class);
+
+
+Route::get('/get-customer-country/{id}', [SaleInvoiceController::class, 'getCustomerCountry']);
+Route::get('/get-country-price', [SaleInvoiceController::class, 'getCountryPrice']);
+
+Route::get('/sale-invoices/create', [SaleInvoiceController::class, 'create']);
+
+Route::resource('countries', CountryController::class);
+
+
+Route::post('/settings/update-permissions', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions')
+    ->middleware('auth');
+
+Route::post('/admin/update-permissions', [AdminController::class, 'updatePermissions'])->name('admin.updatePermissions');
+
+Route::post('/assign-role/{id}', [UserController::class, 'assignRole'])->name('assign.role');
+
+Route::post('/admin/update-permissions', [AdminController::class, 'updatePermissions'])->name('admin.updatePermissions');
+
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+
+Route::get('/invoices', [SaleInvoiceController::class, 'index'])
+    ->middleware('checkRole:Invoices');
+
 
 
 
@@ -54,6 +108,7 @@ Route::get('/get-latest-invoice-date/{customerId}', function($customerId) {
     ]);
 });
 
+
 Route::get('/sale-invoices/{id}/details', [SalePaymentController::class, 'getInvoiceDetails']);
 
 Route::get('/purchase-invoices/{id}/pdf', [PurchaseInvoiceController::class, 'generatePdf'])->name('purchase_invoices.pdf');
@@ -69,21 +124,10 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
-
-// Route::post('/settings/update-permissions/{id}', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions');
 
 Route::post('/users/{user}/assign-permissions', [UserController::class, 'assignPermissions'])->name('users.assignPermissions');
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings/update-profile', [SettingsController::class, 'updateProfile'])->name('settings.updateProfile');
-    Route::post('/settings/update-company', [SettingsController::class, 'updateCompany'])->name('settings.updateCompany');
-    Route::post('/settings/update-role/{id}', [SettingsController::class, 'updateRole'])->name('settings.updateRole1');
-    Route::get('/settings/delete-user/{id}', [SettingsController::class, 'deleteUser'])->name('settings.deleteUser');
-    Route::get('/settings/add-user', [SettingsController::class, 'addUser'])->name('settings.addUser');
-});
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -92,7 +136,6 @@ Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edi
 Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-// Route::resource('users', UserController::class);
 
 Route::post('/credit_notes', [CreditNoteController::class, 'store'])->name('credit_notes.store');
 Route::get('/credit_notes', [CreditNoteController::class, 'index'])->name('credit_notes.index');
@@ -114,7 +157,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// Route::resource('products', ProductController::class);
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -136,14 +178,12 @@ Route::delete('products/{product}', [ProductController::class, 'destroy'])
      ->name('products.destroy');
 
 
-// Route::resource('sales-payments', SalePaymentController::class);
 
 Route::resource('purchase-payments', PurchasePaymentController::class);
 
 Route::resource('sale-payments', SalePaymentController::class);
 Route::resource('roles', RoleController::class);
 Route::get('/sale-payments', [SalePaymentController::class, 'index'])->name('sale-payments.index');
-// Route::resource('purchase-invoices', PurchaseInvoiceController::class);
 Route::post('/payments/store', [SalePaymentController::class, 'store'])->name('payments.store');
 
 
@@ -156,9 +196,6 @@ Route::post('/purchase-payments/store', [PurchasePaymentController::class, 'stor
 
 Route::resource('sale_payments', SalePaymentController::class);
 
-// Route::get('/sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'pdf'])->name('sale_invoices.pdf');
-
-// Route::get('/purchase_invoices/{id}/pdf', [PurchaseInvoiceController::class, 'pdf'])->name('purchase_invoices.pdf');
 
 Route::get('/purchase_invoices/{id}/edit', [PurchaseInvoiceController::class, 'edit'])->name('purchase_invoices.edit');
 Route::put('/purchase_invoices/{id}', [PurchaseInvoiceController::class, 'update'])->name('purchase_invoices.update');
@@ -173,12 +210,6 @@ Route::get('/purchase_invoices/{id}', [PurchaseInvoiceController::class, 'show']
 
 Route::get('/sale_invoices/{id}/edit', [SaleInvoiceController::class, 'edit'])->name('sale_invoices.edit');
 Route::put('/sale-invoices/{sale_invoice}', [SaleInvoiceController::class, 'update'])->name('sale_invoices.update');
-
-// Route::get('sale_invoices/{id}', [SaleInvoiceController::class, 'show'])->name('sale_invoices.show');
-
-// Route::get('sale_invoices/{id}/pdf', [SaleInvoiceController::class, 'generatePDF'])->name('sale_invoices.pdf');
-
-// Route::resource('sale_invoices', SaleInvoiceController::class);
 
 
 Route::resource('products', ProductController::class);
@@ -202,7 +233,14 @@ Route::get('/dashboard', function () {
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {

@@ -9,7 +9,6 @@ use App\Models\PurchaseInvoiceItem;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Customer;
-use App\Models\Products;
 use App\Models\SalePayment;
 use App\Models\PurchasePayment;
 use Carbon\Carbon;
@@ -17,6 +16,8 @@ use DB;
 
 class ReportController extends Controller
 {
+
+
     public function index()
     {
         return view('reports.index');
@@ -44,7 +45,7 @@ class ReportController extends Controller
 
     public function stockReport()
     {
-        $low_stock_products = Products::where('stock', '<=', 10)->get();
+        $low_stock_products = Product::where('stock', '<=', 10)->get();
         return view('reports.stock', compact('low_stock_products'));
     }
 

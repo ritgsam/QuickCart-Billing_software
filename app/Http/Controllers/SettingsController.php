@@ -6,15 +6,17 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Permission;
+use Spatie\Permission\Models\Role;
+
 
 class SettingsController extends Controller {
-    public function index()
+public function index()
     {
         $settings = Setting::first();
         $users = User::all();
         return view('settings.index', compact('settings', 'users'));
     }
-
     public function updateProfile(Request $request)
 {
    $settings = Setting::firstOrNew([]);
@@ -61,9 +63,6 @@ public function updateRole(Request $request, $id) {
         return redirect()->route('settings.index')->with('success', 'Company settings updated successfully.');
     }
 
-
-
-
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
@@ -76,7 +75,16 @@ public function updateRole(Request $request, $id) {
     return view('settings.add_user');
 }
 
+public function updatePermissions(Request $request)
+{
+    $managerRole = Role::where('name', 'Manager')->first();
 
+    if ($managerRole) {
+        $managerRole->syncPermissions($request->permissions ?? []);
+    }
+
+    return redirect()->back()->with('success', 'Permissions updated successfully.');
+}
 
     public function update(Request $request) {
         $request->validate([
@@ -112,20 +120,6 @@ $user->save();
 
     return redirect()->back()->with('success', 'Profile updated successfully.');
 }
-public function updatePermissions(Request $request, User $user)
-{
-    if (!Gate::allows('manage-users')) {
-        abort(403, 'Unauthorized Action.');
-    }
-
-    $validated = $request->validate([
-        'permissions' => 'nullable|array',
-    ]);
-
-    $user->permissions = json_encode($validated['permissions']);
-    $user->save();
-
-    return redirect()->route('settings.index')->with('success', 'Permissions updated successfully.');
-}
 
 }
+

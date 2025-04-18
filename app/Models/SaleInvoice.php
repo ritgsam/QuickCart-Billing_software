@@ -8,11 +8,16 @@ class SaleInvoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'invoice_number', 'customer_id', 'invoice_date', 'total_amount',
-        'discount', 'tax', 'payment_status', 'due_date',
-        'invoice_notes', 'sales_executive_id','global_discount','final_amount'
-    ];
+protected $fillable = [
+    'customer_id', 'invoice_date', 'due_date',
+    'payment_status', 'global_discount', 'round_off',
+    'final_amount', 'invoice_notes','transporter_name','total_amount','balance_due',
+    'vehicle_number',
+    'dispatch_date',
+    'expected_delivery_date',
+    'status'
+];
+
 protected static function boot()
     {
         parent::boot();
@@ -31,6 +36,10 @@ protected static function boot()
         return $this->belongsTo(User::class, 'sales_executive_id');
     }
 
+public function saleItems()
+{
+    return $this->hasMany(SaleInvoiceItem::class);
+}
     public function items()
     {
         return $this->hasMany(SaleInvoiceItem::class);
@@ -55,6 +64,13 @@ public function getDiscountPercentageAttribute()
 {
     return $this->discount ?? 0;
 }
+
+
+public function transportation()
+{
+    return $this->hasOne(\App\Models\Transportation::class, 'sale_invoice_id');
+}
+
 
 }
 

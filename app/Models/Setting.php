@@ -17,4 +17,5 @@ class Setting extends Model {
     protected $casts = [
         'roles_permissions' => 'array'
     ];
+
 }
