@@ -39,6 +39,9 @@ Route::get('/get-supplier-invoice/{supplierId}', [DebitNoteController::class, 'g
 // Route::get('/invoices/{id}', [InvoiceApiController::class, 'show']);
 
 Route::resource('/transportations', TransportationController::class);
+Route::get('/transportation', [TransportationController::class, 'index'])->name('transportation.index');
+Route::delete('/transportation/{id}', [TransportationController::class, 'destroy'])->name('transportation.destroy');
+
 // Route::resource('/transportations', TransportationController::class,'transportations');
 
 Route::get('/customer-country-prices/{id}', [ProductPriceController::class, 'getPricesByCustomer']);

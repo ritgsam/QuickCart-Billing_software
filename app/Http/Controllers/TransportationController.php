@@ -24,8 +24,6 @@ public function create()
         return view('transportation.show', compact('transportation'));
     }
 
-    
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,5 +38,14 @@ public function create()
         Transportation::create($validated);
         return redirect()->route('transportation.index')->with('success', 'Transportation added.');
     }
+public function destroy($id)
+{
+    $transportation = Transportation::findOrFail($id);
+    $transportation->delete();
+
+    return redirect()->route('transportation.index')->with('success', 'Transportation record deleted successfully.');
+}
+
+
 }
 

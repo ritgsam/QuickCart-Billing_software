@@ -26,6 +26,8 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url('/customers') }}">Customers</a></li>
                             <li><a class="dropdown-item" href="{{ url('/suppliers') }}">Suppliers</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/products') }}">Products</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/categories') }}">Categories</a></li>
                         </ul>
                     </li>
 
@@ -53,11 +55,7 @@
                             <li><a class="dropdown-item" href="{{ url('/debit_notes') }}">Debit Note</a></li>
                         </ul>
                     </li>
-
-                    <a href="{{ url('/categories') }}" class="bi bi-list-stars me-2">Categories</a>
-                    <a href="{{ url('/products') }}" class="bi bi-box me-2">Products</a>
                     <a href="{{ url('/reports') }}" class="bi bi-building-fill-gear me-2">Reports</a>
-                    {{-- <a href="{{ url('/users') }}" class="me-2">Users & Roles</a> --}}
                     <a href="{{ url('/settings') }}" class="bi bi-gear-wide-connected me-2">Settings</a>
 
                     <form method="POST" action="{{ route('logout') }}">

@@ -71,7 +71,6 @@ public function transportation()
     return $this->hasOne(\App\Models\Transportation::class, 'sale_invoice_id');
 }
 
-
 }
 
 

@@ -56,19 +56,14 @@
                             <li><a class="dropdown-item" href="{{ url('/debit_notes') }}">Debit Note</a></li>
                         </ul>
                     </li>
-                    {{-- <li class="nav-item"><a class="bi bi-list-stars nav-link fw-semibold"  href="{{ url('/categories') }}">Categories</a></li> --}}
-                    {{-- <li class="nav-item"><a class="bi bi-box nav-link fw-semibold" href="{{ url('/products') }}">Products</a></li> --}}
                     <li class="nav-item"><a class="bi bi-building-fill-gear nav-link fw-semibold" href="{{ url('/reports') }}">Reports</a></li>
-                    {{-- <li class="nav-item"><a class="nav-link fw-semibold" href="http://127.0.0.1:8000/users">Users & Roles</a></li> --}}
                      <li class="nav-item"><a class="bi bi-gear-wide-connected nav-link fw-semibold" href="{{ url('/settings') }}">Settings</a></li>
                 </ul>
             </div>
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit" class="bi bi-box-arrow-left nav-link text-danger fw-semibold">Logout</button>
-</form>
-
-                    {{-- <li class="nav-item"><a class="bi bi-box-arrow-left nav-link text-danger fw-semibold" href="{{ url('/login') }}">Logout</a></li> --}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="bi bi-box-arrow-left nav-link text-danger fw-semibold">Logout</button>
+                </form>
                 </ul>
             </div>
         </div>

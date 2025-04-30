@@ -49,7 +49,6 @@ public function index(Request $request)
     return view('purchase_invoices.index', compact('invoices', 'suppliers'));
 }
 
-
 public function create()
     {
         $suppliers = Supplier::all();

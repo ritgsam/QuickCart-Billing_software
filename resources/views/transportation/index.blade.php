@@ -34,9 +34,18 @@
                     <td>{{ $transport->dispatch_date }}</td>
                     <td>{{ $transport->expected_delivery_date }}</td>
                     <td>{{ $transport->status }}</td>
-                    <td>
+                    {{-- <td>
                         <a href="{{ route('transportations.show', $transport->id) }}" class="btn btn-sm btn-dark">View</a>
-                    </td>
+                    </td> --}}
+<td class="d-flex gap-1">
+    <a href="{{ route('transportations.show', $transport->id) }}" class="btn btn-sm btn-dark">View</a>
+
+    <form action="{{ route('transportations.destroy', $transport->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this transportation record?');" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+    </form>
+</td>
                 </tr>
             @empty
                 <tr><td colspan="9" class="text-center">No records found.</td></tr>
