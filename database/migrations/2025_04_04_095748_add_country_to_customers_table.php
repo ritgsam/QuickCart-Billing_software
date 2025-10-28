@@ -11,12 +11,15 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+   public function up()
 {
     Schema::table('customers', function (Blueprint $table) {
-        $table->string('country')->nullable()->after('gst_number');
+        if (!Schema::hasColumn('customers', 'country')) {
+            $table->string('country')->nullable()->after('gst_number');
+        }
     });
 }
+
 
 public function down()
 {

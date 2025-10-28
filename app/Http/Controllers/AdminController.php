@@ -27,7 +27,7 @@ public function updatePermissions(Request $request)
 }
 public function settingsPage()
 {
-    $permissions = Permission::all(); 
+    $permissions = Permission::all();
     return view('settings.index', compact('permissions'));
 }
 }

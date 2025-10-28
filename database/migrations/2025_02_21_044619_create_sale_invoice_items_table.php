@@ -17,11 +17,11 @@ return new class extends Migration {
                 $table->decimal('unit_price', 10, 2);
                 $table->decimal('tax', 5, 2)->default(0);
                 $table->decimal('total_price', 10, 2);
-                $table->decimal('sgst', 10, 2)->default(0)->after('price');
-                $table->decimal('cgst', 10, 2)->default(0)->after('sgst');
-                $table->decimal('igst', 10, 2)->default(0)->after('cgst');
-                $table->decimal('gst_rate', 5, 2)->default(0)->after('unit_price');
-                $table->decimal('discount', 5, 2)->default(0)->after('gst_rate');
+                $table->decimal('sgst', 10, 2)->default(0);
+                $table->decimal('cgst', 10, 2)->default(0);
+                $table->decimal('igst', 10, 2)->default(0);
+                $table->decimal('gst_rate', 5, 2)->default(0);
+                $table->decimal('discount', 5, 2)->default(0);
                 $table->timestamps();
             });
         }

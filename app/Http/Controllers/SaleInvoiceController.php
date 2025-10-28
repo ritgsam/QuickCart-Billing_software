@@ -45,7 +45,6 @@ public function index(Request $request)
 
     return view('sale_invoices.index', compact('invoices', 'customers'));
 }
-
 public function create()
 {
     $customers = Customer::with('country')->get();
@@ -75,8 +74,6 @@ public function edit($id)
 
     return view('sale_invoices.edit', compact('invoice', 'customers', 'products', 'invoiceItems'));
 }
-
-
     public function pay($id)
 {
     $invoice = SaleInvoice::findOrFail($id);
@@ -272,8 +269,6 @@ public function update(Request $request, SaleInvoice $invoice)
 
     return redirect()->route('sale_invoices.index')->with('success', 'Invoice updated successfully.');
 }
-
-
 
 public function show($id)
 {

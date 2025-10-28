@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $fillable = [
     'name', 'sku', 'category_id', 'purchase_price', 'selling_price', 'gst_rate', 'discount',
-    'visibility', 'stock', 'tax_rate', 'hsn_code'
+    'visibility', 'stock_quantity', 'tax_rate', 'hsn_code'
 ];
 
 protected static function booted()

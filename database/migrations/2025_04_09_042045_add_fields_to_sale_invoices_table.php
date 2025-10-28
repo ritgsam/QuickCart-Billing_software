@@ -11,13 +11,19 @@ return new class extends Migration
      *
      * @return void
      */
-   public function up(): void
+  public function up(): void
 {
     Schema::table('sale_invoices', function (Blueprint $table) {
-        $table->decimal('round_off', 10, 2)->default(0)->after('invoice_notes');
-        $table->decimal('final_amount', 10, 2)->default(0)->after('round_off');
+        if (!Schema::hasColumn('sale_invoices', 'round_off')) {
+            $table->decimal('round_off', 10, 2)->default(0)->after('invoice_notes');
+        }
+
+        if (!Schema::hasColumn('sale_invoices', 'final_amount')) {
+            $table->decimal('final_amount', 10, 2)->default(0)->after('round_off');
+        }
     });
 }
+
 
 public function down(): void
 {

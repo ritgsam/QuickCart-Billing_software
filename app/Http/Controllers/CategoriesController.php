@@ -32,8 +32,6 @@ class CategoriesController extends Controller
     return redirect()->route('categories.index')->with('success', 'Category added successfully!');
 }
 
-
-
     public function edit(Categories $category)
     {
         return view('categories.edit', compact('category'));

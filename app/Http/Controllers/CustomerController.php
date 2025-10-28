@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
@@ -13,11 +13,7 @@ class CustomerController extends Controller
         $customers = Customer::all();
         return view('customers.index', compact('customers'));
     }
-    public function destroy(Customer $customer)
-    {
-        $customer->delete();
-        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
-    }
+
 public function create()
     {
         return view('customers.create');
@@ -39,7 +35,7 @@ public function getCountry($id)
         'state' => 'nullable|string|max:100',
         'postal_code' => 'nullable|string|max:10',
         'gst_number' => 'nullable|string|max:20',
-        'country' => 'nullable|string|max:100',
+        'country' => 'nullable|max:100',
 
     ]);
 
@@ -47,7 +43,7 @@ public function getCountry($id)
 
     return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
 }
-    
+
    public function edit(Customer $customer)
 {
     return view('customers.edit', compact('customer'));
@@ -79,7 +75,7 @@ public function getPricesByCustomer($customerId)
         return response()->json(['error' => 'Customer has no country assigned'], 422);
     }
 
-    $products = Products::with(['prices' => function ($query) use ($countryId) {
+    $products = Product::with(['prices' => function ($query) use ($countryId) {
         $query->where('country_id', $countryId);
     }])->get();
 
@@ -94,4 +90,10 @@ public function getPricesByCustomer($customerId)
 
     return response()->json(['products' => $productList]);
 }
+
+ public function destroy(Customer $customer)
+    {
+        $customer->delete();
+        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+    }
 }

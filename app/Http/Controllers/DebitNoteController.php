@@ -13,8 +13,6 @@ class DebitNoteController extends Controller
     $debitNotes = DebitNote::with(['supplier', 'purchaseInvoice'])->get();
     return view('debit_notes.index', compact('debitNotes'));
 }
-
-
     public function create()
     {
         $suppliers = Supplier::all();

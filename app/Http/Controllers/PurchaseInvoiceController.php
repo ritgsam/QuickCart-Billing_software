@@ -56,6 +56,7 @@ public function create()
         return view('purchase_invoices.create', compact('suppliers', 'products'));
     }
 
+
 public function show($id)
 {
     $invoice = PurchaseInvoice::with('supplier', 'items.product')->findOrFail($id);

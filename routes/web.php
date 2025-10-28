@@ -64,14 +64,12 @@ Route::group(['middleware' => ['role:Admin|Manager']], function () {
 
 Route::resource('purchase-invoices', PurchaseInvoiceController::class);
 
-
 Route::get('/get-customer-country/{id}', [SaleInvoiceController::class, 'getCustomerCountry']);
 Route::get('/get-country-price', [SaleInvoiceController::class, 'getCountryPrice']);
 
 Route::get('/sale-invoices/create', [SaleInvoiceController::class, 'create']);
 
 Route::resource('countries', CountryController::class);
-
 
 Route::post('/settings/update-permissions', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions')
     ->middleware('auth');
@@ -86,9 +84,6 @@ Route::get('/settings', [SettingsController::class, 'index'])->name('settings.in
 
 Route::get('/invoices', [SaleInvoiceController::class, 'index'])
     ->middleware('checkRole:Invoices');
-
-
-
 
 Route::get('/get-purchase-invoice-details/{invoiceId}', function ($invoiceId) {
     $invoice = PurchaseInvoice::find($invoiceId);
@@ -125,19 +120,20 @@ Route::get('/purchase-invoices/{id}/pdf', [PurchaseInvoiceController::class, 'ge
 
 Route::get('/sale-invoice/{id}/pdf', [SaleInvoiceController::class, 'generatePdf'])->name('sale-invoice.pdf');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 
-    Route::middleware(['can:manage-users'])->group(function () {
-        Route::post('/settings/update-role/{user}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
-        Route::post('/settings/update-permissions/{user}', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions');
-    });
-});
+//     Route::middleware(['can:manage-users'])->group(function () {
+//         Route::post('/settings/update-role/{user}', [SettingsController::class, 'updateRole'])->name('settings.updateRole');
+//         Route::post('/settings/update-permissions/{user}', [SettingsController::class, 'updatePermissions'])->name('settings.updatePermissions');
+//     });
+// });
 
 
 Route::post('/users/{user}/assign-permissions', [UserController::class, 'assignPermissions'])->name('users.assignPermissions');
 
 
+// Route::resource('users', UserController::class);
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

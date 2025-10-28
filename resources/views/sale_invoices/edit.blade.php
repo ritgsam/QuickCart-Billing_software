@@ -17,7 +17,6 @@
                 @endforeach
             </select>
         </div>
-
         <div class="mb-4">
             <label class="block font-semibold">Invoice Date:</label>
             <input type="date" name="invoice_date" class="w-full p-2 border rounded" value="{{ $invoice->invoice_date }}" required>
@@ -50,14 +49,14 @@
                     </td>
                     <td class="px-4 py-2 border"><input type="number" name="products[{{ $index }}][quantity]" class="quantity w-full p-2 border rounded" value="{{ $item->quantity }}" required></td>
                     <td class="px-4 py-2 border"><input type="number" name="products[{{ $index }}][unit_price]" class="unit-price w-full p-2 border rounded" value="{{ $item->unit_price }}" readonly></td>
-<td class="px-4 py-2 border">
-    <select name="products[0][gst_rate]" class="gst-rate w-full p-2 border rounded" onchange="updateTotal()">
-        <option value="5">5%</option>
-        <option value="12">12%</option>
-        <option value="18" selected>18%</option>
-        <option value="28">28%</option>
-    </select>
-</td>
+        <td class="px-4 py-2 border">
+            <select name="products[0][gst_rate]" class="gst-rate w-full p-2 border rounded" onchange="updateTotal()">
+                <option value="5">5%</option>
+                <option value="12">12%</option>
+                <option value="18" selected>18%</option>
+                <option value="28">28%</option>
+            </select>
+        </td>
 
 <td class="px-4 py-2 border"><input type="number" name="products[{{ $index }}][discount]" class="discount w-full p-2 border rounded" value="{{ $item->discount }}"></td>
                     <td class="px-4 py-2 border"><input type="number" name="products[{{ $index }}][total_price]" class="total-price w-full p-2 border rounded" value="{{ $item->total_price }}" readonly></td>

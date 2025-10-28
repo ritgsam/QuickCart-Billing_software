@@ -124,8 +124,6 @@
     </div>
 </div>
 
-
-
         <div class="grid grid-cols-2 gap-4 mt-6">
             {{-- <div>
                 <label>Global Discount (%):</label>
@@ -157,7 +155,6 @@
             </div>
         </div>
 
-
         <div class="mt-6">
 
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Submit Invoice</button>
@@ -167,7 +164,7 @@
 </div>
 
 <script>
- document.querySelector('select[name="customer_id"]').addEventListener('change', function () {
+    document.querySelector('select[name="customer_id"]').addEventListener('change', function () {
         const customerId = this.value;
 
         fetch(`/customer-country-prices/${customerId}`)
@@ -195,15 +192,12 @@
         row.querySelector('.unit-price').value = price;
     }
 
-
     const customers = @json($customers);
     const productPrices = @json($products->mapWithKeys(function($product) {
         return [$product->id => $product->prices->mapWithKeys(function($price) {
             return [$price->country_id => $price->price];
         })];
     }));
-
-
 
     let rowIndex = 1;
 

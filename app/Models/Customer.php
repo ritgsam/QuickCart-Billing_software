@@ -19,9 +19,7 @@ protected $fillable = [
     {
         return $this->hasManyThrough(Categories::class, Product::class, 'customer_id', 'id', 'id', 'category_id');
     }
-
 public function country() {
     return $this->belongsTo(Country::class);
 }
-
 }

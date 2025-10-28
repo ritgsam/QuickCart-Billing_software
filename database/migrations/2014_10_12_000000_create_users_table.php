@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('password');
             $table->json('permissions')->nullable();
             $table->string('role')->default('user');
-            $table->string('role')->default('Manager');
+            // $table->string('role')->default('Manager');
             $table->boolean('status')->default(1);
             $table->timestamp('last_login')->nullable();
             $table->rememberToken();

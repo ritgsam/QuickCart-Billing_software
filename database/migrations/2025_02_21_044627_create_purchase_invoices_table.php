@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->decimal('cgst', 15, 2)->default(0);
             $table->decimal('igst', 15, 2)->default(0);
             $table->decimal('round_off', 10, 2)->default(0);
-            $table->decimal('final_amount', 10, 2)->after('discount')->nullable();
+            $table->decimal('final_amount', 10, 2);
             $table->string('payment_status')->default('paid');
             $table->date('due_date')->nullable();
             $table->text('invoice_notes')->nullable();
