@@ -130,34 +130,34 @@ Route::get('/sale-invoice/{id}/pdf', [SaleInvoiceController::class, 'generatePdf
 // });
 
 
-Route::post('/users/{user}/assign-permissions', [UserController::class, 'assignPermissions'])->name('users.assignPermissions');
+    Route::post('/users/{user}/assign-permissions', [UserController::class, 'assignPermissions'])->name('users.assignPermissions');
 
 
 // Route::resource('users', UserController::class);
 
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
-Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
-Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
 
-Route::post('/credit_notes', [CreditNoteController::class, 'store'])->name('credit_notes.store');
-Route::get('/credit_notes', [CreditNoteController::class, 'index'])->name('credit_notes.index');
-Route::resource('purchase_payments', PurchasePaymentController::class);
+    Route::post('/credit_notes', [CreditNoteController::class, 'store'])->name('credit_notes.store');
+    Route::get('/credit_notes', [CreditNoteController::class, 'index'])->name('credit_notes.index');
+    Route::resource('purchase_payments', PurchasePaymentController::class);
 
-Route::resource('debit_notes', DebitNoteController::class);
-Route::get('/sale_invoices/{id}/download', [SaleInvoiceController::class, 'download'])->name('sale_invoices.download');
+    Route::resource('debit_notes', DebitNoteController::class);
+    Route::get('/sale_invoices/{id}/download', [SaleInvoiceController::class, 'download'])->name('sale_invoices.download');
 
-Route::get('/credit-notes/create', [CreditNoteController::class, 'create'])->name('credit-notes.create');
+    Route::get('/credit-notes/create', [CreditNoteController::class, 'create'])->name('credit-notes.create');
 
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-Route::get('/reports/sales', [ReportController::class, 'salesReport'])->name('reports.sales');
-Route::get('/reports/purchases', [ReportController::class, 'purchaseReport'])->name('reports.purchases');
-Route::get('/reports/stock', [ReportController::class, 'stockReport'])->name('reports.stock');
-Route::get('/reports/financial', [ReportController::class, 'financialReport'])->name('reports.financial');
-Route::middleware(['auth'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/sales', [ReportController::class, 'salesReport'])->name('reports.sales');
+    Route::get('/reports/purchases', [ReportController::class, 'purchaseReport'])->name('reports.purchases');
+    Route::get('/reports/stock', [ReportController::class, 'stockReport'])->name('reports.stock');
+    Route::get('/reports/financial', [ReportController::class, 'financialReport'])->name('reports.financial');
+    Route::middleware(['a uth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 });

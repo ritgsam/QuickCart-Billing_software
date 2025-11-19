@@ -96,34 +96,33 @@
             </div>
         </div>
 
-      <h2 class="mt-5 text-center fw-bold" >Low Stock Alerts</h2>
-@if ($low_stock_products->isEmpty())
-    <p class="text-center text-muted">All products have sufficient stock.</p>
-@else
-    <div class="table-responsive">
-        <table class="table table-bordered text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Product Name</th>
-                    <th>Stock</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($low_stock_products as $product)
-                <tr>
-                    <td style="background-color: rgb(238, 231, 231)">{{ $product->name }}</td>
-                    <td class="text-danger fw-bold" style="background-color: rgb(238, 231, 231)">{{ $product->stock }}</td>
-                    <td style="background-color: rgb(238, 231, 231)">
-                        <a href="{{ route('products.edit', $product->id) }}" class="btn text-white btn-sm" style="background-color: rgba(43, 42, 42, 0.694);">Edit Stock</a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-@endif
-
+        <h2 class="mt-5 text-center fw-bold" >Low Stock Alerts</h2>
+            @if ($low_stock_products->isEmpty())
+                <p class="text-center text-muted">All products have sufficient stock.</p>
+            @else
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Stock</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($low_stock_products as $product)
+                            <tr>
+                                <td style="background-color: rgb(238, 231, 231)">{{ $product->name }}</td>
+                                <td class="text-danger fw-bold" style="background-color: rgb(238, 231, 231)">{{ $product->stock }}</td>
+                                <td style="background-color: rgb(238, 231, 231)">
+                                    <a href="{{ route('products.edit', $product->id) }}" class="btn text-white btn-sm" style="background-color: rgba(43, 42, 42, 0.694);">Edit Stock</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
                 <tbody>
                     @forelse ($low_stock_products as $product)
                         <tr>
@@ -176,8 +175,6 @@
         }
     });
 </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

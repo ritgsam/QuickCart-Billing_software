@@ -8,13 +8,13 @@ class DebitNote extends Model
 {
     use HasFactory;
 
-protected $fillable = [
-    'debit_note_number',
-    'supplier_id',
-    'purchase_invoice_id',
-    'debit_date',
-    'total_amount',
-];
+    protected $fillable = [
+        'debit_note_number',
+        'supplier_id',
+        'purchase_invoice_id',
+        'debit_date',
+        'total_amount',
+    ];
 
     public function supplier()
     {

@@ -10,7 +10,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        return view('dashboard.index');
     }
 public function updatePermissions(Request $request)
 {
